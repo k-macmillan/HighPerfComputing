@@ -2,6 +2,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{minted}                     % Code
+\usepackage{graphicx}                   % PNGs
 \usepackage{hyperref}                   % Hyperlinks
 \hypersetup{
     colorlinks,
@@ -20,12 +21,21 @@
 \begin{document}
 
 \maketitle
+\addcontentsline{toc}{section}{Title}
 
 \newpage
-\tableofcontents
 \pagenumbering{roman}   % Set TOC page numbering to lowercase roman numerals
+\tableofcontents
+\addcontentsline{toc}{section}{Table of Contents}
+
 
 \newpage
+\listoffigures
+\addcontentsline{toc}{section}{\listfigurename}
+
+
+\newpage
+\pagenumbering{arabic}  % Set content page numbering to arabic numerals
 % Setup Hyperlinks for the rest of the document
 \hypersetup{
     colorlinks,
@@ -34,9 +44,6 @@
     linkcolor=blue,
     urlcolor=blue
 }
-\pagenumbering{arabic}  % Set content page numbering to arabic numerals
-
-
 
 \section{Problem 1}}
 \setcounter{page}{1} % Set the page counter to 3
@@ -56,7 +63,11 @@
 \section{Problem 2}
 \textit{Suppose OpenMP did not have the reduction clause. Show how to implement an efficient parallel reduction by adding a private variable and using the critical pragma.}
 \inputminted{c++}{problem2.cpp}
-
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{Problem2debug}
+\caption{Example Output}
+\label{fig:p2}
+\end{figure}
 
 \section{Problem 3}
 \subsection{Problem 3a}
