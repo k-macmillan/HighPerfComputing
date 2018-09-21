@@ -80,7 +80,7 @@
     \end{minipage}
 \end{figure}
 
-As can be seen in the figures the sums are performing as expected. An interesting, and expected outcome is that in Figure~\ref{fig:p2debug} it takes 0.06 seconds to run $OMP$ and $No\ Reduc$ but in Figure~\ref{fig:p2} it takes 0.05 seconds. The $No\ OMP$ takes 0.40 seconds regardless. The reason for this behavior is that $OMP$ uses the cores you give it and at the time of recording the first figure the browser was open and running a video. When I recorded the second Figure I had closed my browser to maximize performance for multi-core processing.
+As can be seen in the figures the sums are performing as expected. An interesting, and expected outcome is that in Figure~\ref{fig:p2debug} it takes 0.06 seconds to run $OMP$ and $No\ Reduc$ but in Figure~\ref{fig:p2} it takes 0.05 seconds. The $No\ OMP$ takes 0.40 seconds regardless. The reason for this behavior is that $OMP$ uses the cores you give it and at the time of recording the first figure the browser was open and running a video. When I recorded the second Figure I had closed my browser to maximize performance for multi-core processing. The $No\ OMP$ section of code was only running on one core, so it did not care that I had a video playing.
 
 
 \section{Problem 3}
