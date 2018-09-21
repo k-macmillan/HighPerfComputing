@@ -1,13 +1,15 @@
 \documentclass{article}
-% \usepackage[margin=1in]{geometry}
-\usepackage[utf8]{inputenc}
 
-% Give Table of Contents Hyperlinks
-\usepackage{hyperref}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{minted}                     % Code
+\usepackage{hyperref}                   % Hyperlinks
 \hypersetup{
     colorlinks,
     linkcolor=black
 }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \pagenumbering{gobble}
 
 \title{\textbf{Homework #1}}
@@ -21,11 +23,10 @@
 
 \newpage
 \tableofcontents
-\addcontentsline{toc}{section}{Title}
 \pagenumbering{roman}   % Set TOC page numbering to lowercase roman numerals
-\addcontentsline{toc}{section}{Table of Contents}
 
 \newpage
+% Setup Hyperlinks for the rest of the document
 \hypersetup{
     colorlinks,
     citecolor=blue,
@@ -39,12 +40,21 @@
 
 \section{Problem 1}}
 \setcounter{page}{1} % Set the page counter to 3
-asdf
+\textit{What are the identity values for the operators}: $\&\&,\ ||,\ |,\ ^\wedge $?
+
+\begin{itemize}
+    \begin{tabular}{@{}ll}
+    \item $\&\&$ &: 1\\
+    \item $||$ &: 0\\
+    \item $|$ &: 0\\
+    \item $^\wedge$ &: 0\\
+    \end{tabular}
+\end{itemize}
 
 
 
 \section{Problem 2}
-asdf
+\textit{Suppose OpenMP did not have the reduction clause. Show how to implement an efficient parallel reduction by adding a private variable and using the critical pragma.}
 
 
 

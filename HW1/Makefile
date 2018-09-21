@@ -33,10 +33,5 @@ HW1.pdf: HW1.tex
 		# Run it twice so it gathers references otherwise Table of Contents may be blank
 		latexmk -pdf -pdflatex="pdflatex -interaction=nonstopmode" -use-make HW1.tex;latexmk -pdf -pdflatex="pdflatex -interaction=nonstopmode" -use-make HW1.tex
 
-#need to run pdflatex twice to get refrences.
-#pdflatex -interaction-nonstopmode -use-make HW1.tex		
-#pdflatex -interaction-nonstopmode -use-make HW1.tex		
-
-
 clean:
 		latexmk -CA
