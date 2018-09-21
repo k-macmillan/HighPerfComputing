@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
     duration<double> no_reduc_time = duration_cast<duration<double>>(high_resolution_clock::now() - high_resolution_clock::now());
     for(uint8_t j = 0; j < times; ++j)
     {
-        uint64_t    n       = 80000,
+        uint64_t    n       = 80000000,
                     k       = 0;
         int64_t     sum     = 0;
         
@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
         no_omp_time += duration_cast<duration<double>>(t2 - t1);
 #ifdef DEBUG
         if (j == 0){
-            printf("sum: %" PRIi64 " runs:\n", sum);
+            printf("No OMP sum   : %" PRIi64 "\n", sum);
         }
 #endif
 
@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
         omp_time += duration_cast<duration<double>>(t2 - t1);
 #ifdef DEBUG
         if (j == 0){
-            printf("sum: %" PRIi64 " runs:\n", sum);
+            printf("OMP sum      : %" PRIi64 "\n", sum);
         }
 #endif
 
@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
             int64_t thread_sum = 0;
             #pragma omp for
             for(uint64_t i = k; i < n; ++i){
-                // Locally runs this
+                // Locally (privately) runs this
                 thread_sum += ((i & 1) == 0 ? 1.0 : -1.0) * i;
             }
 
@@ -96,7 +96,7 @@ int main(int argc, char* argv[]) {
         no_reduc_time += duration_cast<duration<double>>(t2 - t1);
 #ifdef DEBUG
         if (j == 0){
-            printf("sum: %" PRIi64 " runs:\n", sum);
+            printf("No Reduc sum : %" PRIi64 "\n", sum);
         }
 #endif
     }
