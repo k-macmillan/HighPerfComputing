@@ -31,9 +31,12 @@ int main(int argc, char* argv[]) {
     uint8_t times = 20;
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
-    duration<double> no_omp_time = duration_cast<duration<double>>(high_resolution_clock::now() - high_resolution_clock::now());
-    duration<double> omp_time = duration_cast<duration<double>>(high_resolution_clock::now() - high_resolution_clock::now());
-    duration<double> no_reduc_time = duration_cast<duration<double>>(high_resolution_clock::now() - high_resolution_clock::now());
+    duration<double> no_omp_time = duration_cast<duration<double>>\
+        (high_resolution_clock::now() - high_resolution_clock::now());
+    duration<double> omp_time = duration_cast<duration<double>>\
+        (high_resolution_clock::now() - high_resolution_clock::now());
+    duration<double> no_reduc_time = duration_cast<duration<double>>\
+        (high_resolution_clock::now() - high_resolution_clock::now());
     for(uint8_t j = 0; j < times; ++j)
     {
         uint64_t    n       = 80000000,

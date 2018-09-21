@@ -57,3 +57,4 @@ dkms.conf
 *.fls
 *.log
 *.toc
+_minted-*
