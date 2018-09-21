@@ -68,29 +68,20 @@
     \centering
     \begin{minipage}{0.7\textwidth}
         \centering
-        \includegraphics[width=0.95\textwidth]{Problem2debug} % first figure itself
+        \includegraphics[width=0.95\textwidth]{Problem2debug}
         \caption{Example debug output.}
         \label{fig:p2debug}
     \end{minipage}\hfill
     \begin{minipage}{0.3\textwidth}
         \centering
-        \includegraphics[width=0.95\textwidth]{Problem2_60} % second figure itself
+        \includegraphics[width=0.95\textwidth]{Problem2_60}
         \caption{Better performance without reduction.}
         \label{fig:p2}
     \end{minipage}
 \end{figure}
 
-% \begin{figure}[h]
-% \includegraphics[width=\textwidth]{Problem2debug}
-% \caption{Example Output}
+As can be seen in the figures the sums are performing as expected. An interesting, and expected outcome is that in Figure~\ref{fig:p2debug} it takes 0.06 seconds to run $OMP$ and $No\ Reduc$ but in Figure~\ref{fig:p2} it takes 0.05 seconds. The $No\ OMP$ takes 0.40 seconds regardless. The reason for this behavior is that $OMP$ uses the cores you give it and at the time of recording the first figure the browser was open and running a video. When I recorded the second Figure I had closed my browser to maximize performance for multi-core processing.
 
-% \end{figure}
-
-% \begin{figure}[h]
-% \includegraphics[width=\textwidth]{Problem2debug}
-% \caption{Example Output}
-% \label{fig:p2}
-% \end{figure}
 
 \section{Problem 3}
 \subsection{Problem 3a}
