@@ -85,13 +85,26 @@ As can be seen in the figures the sums are performing as expected. An interestin
 
 \section{Problem 3}
 \subsection{Problem 3a}
-asdf
+% \inputminted[linestart=136,lineend=141]{c++}{problem3.cpp}
+% TODO: Insert code from 3a
 
 \subsection{Problem 3b}
-asdf
+This code section is not suitable for OpenMP because of the \&\& operator in comparison.
+Per the \hyperlink{https://www.openmp.org/wp-content/uploads/openmp-4.5.pdf}{OpenMP documentation} \S2.6, p53:\\\\
+\begin{tabular}{@{}ll}
+$test$-$expr$ & One of the following:\\
+& $var\ relational$-$op\ b$\\
+& $b\ relational$-$op\ var$\\\\
+
+$relational$-$op$ & One of the following:\\
+& $<$  \\
+& $<=$ \\
+& $>$  \\
+& $>=$ \\
+\end{tabular}
 
 \subsection{Problem 3c}
-asdf
+This code can be ran with OMP but it is dependent on whether or not $foo()$ is threadsafe.
 
 \subsection{Problem 3d}
 asdf
@@ -115,7 +128,8 @@ asdf
 
 
 \section{Problem 5}
-asdf
+\textit{If the address of the nodes in a hypercube has n bits. How many nodes can it be at the most and how many edges does each node have? 
+Give an algorithm that routes a message from node u to node v in this k-node hypercube in no more than log(k) steps.}
 
 
 \section{Graduate Assignment}
