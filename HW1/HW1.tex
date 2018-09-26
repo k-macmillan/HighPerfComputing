@@ -3,6 +3,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{minted}                     % Code
 \usepackage{graphicx}                   % PNGs
+\usepackage[]{algorithm2e}              % Algorithm
 \usepackage{hyperref}                   % Hyperlinks
 \hypersetup{
     colorlinks,
@@ -130,10 +131,33 @@ asdf
 \section{Problem 5}
 \textit{If the address of the nodes in a hypercube has n bits. How many nodes can it be at the most and how many edges does each node have? 
 Give an algorithm that routes a message from node u to node v in this k-node hypercube in no more than log(k) steps.}\\
-Hypercubes are generalized by dimensionality. A hypercube address containing n-bits will exist in n dimensions ($d$). The maximum number of nodes is determined by $d$, and is defined as $\[2^d\]$. A trait of hypercubes is that each node will have $d$ edges. The total amount of edges would be defined as $d * \[2^{d-1}\]$.
+Hypercubes are generalized by dimensionality. A hypercube address containing n-bits will exist in n dimensions ($d$). The maximum number of nodes is determined by $d$, and is defined as $\[2^d\]$. A trait of hypercubes is that each node will have $d$ edges. The total amount of edges would be defined as $d * \[2^{d-1}\]$. The number of nodes you have to travel between $u$ and $v$ is equal to the number of differing bits.\\ 
+For example:
+\begin{itemize}
+    \begin{tabular}{@{}llll}
+    \item 000 & $=>$ & 111 & : 3\\
+    \item 001 & $=>$ & 100 & : 2\\
+    \item 110 & $=>$ & 011 & : 2\\
+    \end{tabular}
+\end{itemize} 
 
+Threfore a traversal algorithm should be:\\
+\begin{algorithm}[H]
+% TODO: write this. Currently this is an algorithm template
+    \caption{How to write algorithms}
+    \eIf{understand}{
+        go to next section\;
+    current section becomes this one\;
+    }{
+        go back to the beginning of current section\;
+    }
+\end{algorithm}
+
+\newpage
 \section{Graduate Assignment}
-asdf
+\textit{Do a search on Shuffle-exchange network topology.  
+Draw the network with 16 processor nodes (carefully numbering each node binary and showing what is a shuffle link, what is an exchange link).  If k is the number of digits in the binary address, how many nodes (n) are there?  With n nodes what is the diameter (d) of the networks, the bisection width (b) and how many edges/node?}\\
+When you first drew a shuffle-exchange network (also sometimes called butterfly network) I immediately thought that looked like a sorter I came up with in 300. I later learned that sort wasn't something I had uniquely developed and was in fact a \href{https://en.wikipedia.org/wiki/Bitonic_sorter}{bitonic sort}. 
 
 
 \end{document}
