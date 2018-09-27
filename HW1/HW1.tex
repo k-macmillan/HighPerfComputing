@@ -138,7 +138,7 @@ This problem is similar to 3c in that it is dependent on $foo()$. Nothing else i
 Cannot be ran in parallel because the break. 
 
 \subsection{Problem 3f}
-Standard use of $OMP$
+Standard use of $OMP$, though I feel that it didn't acutally use $OMP$. I tried to throw a reduction at it but I kept getting an error about $dotp$ being private. I threw a private local $sum$ into the for loop and added \textit{#pragma omp critical} followed by $dotp += sum$ but it gave no performance increase.
 \begin{minted}{c++}
     dotp = 0;
     #pragma omp for
@@ -148,10 +148,22 @@ Standard use of $OMP$
 \end{minted}
 
 \subsection{Problem 3g}
-The problem with this one is that we say $i\gets k$. Given that $OMP$ attempts to slice the problem to available processors it will set i to different values for different threads, which is not the intent of the problem. 
+I thought this one was going to have trouble because of the $i\gets k$ portion but testing showed the values matched for the sequential sanity test and the $OMP$ portion. Of note though, $OMP$ was signficantly slower than sequential until I ramped up $k$.
+\begin{minted}{c++}
+    #pragma omp for
+    for(i = k; i < 2 * k; ++i){
+        a[i] = a[i] + a[i-k];
+    }
+\end{minted}
 
 \subsection{Problem 3h}
-asdf
+This problem is the same as 3g except we are using what is essentially a shared constant, $b$ and we are running through the whole list, depending on what $k$ is. Other than that it behaves the same. Passed sanity check and ran without issue.
+\begin{minted}{c++}
+    #pragma omp for
+    for(i = k; i < n; ++i){
+        a[i] = b * a[i-k];
+    }
+\end{minted}
 
 
 \newpage

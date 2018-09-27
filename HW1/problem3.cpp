@@ -1,17 +1,15 @@
 /* File:    problem3.cpp
- * Purpose: Alternates sign of integer added to sum
+ * Purpose: Testing of each subproblem in Problem 3.
  *
- *              sum = 0 + 1 + -2 + 3 + -4...
- *
- * Compile: g++ -Wall -fopenmp -o problem3 problem3.cpp -std=c++11 -lm
+ * Compile: g++ -Wall -fopenmp -o problem3 problem3.cpp -std=c++11
             g++ -Wall -fopenmp -o problem3 problem3.cpp -DDEBUG -std=c++11
  * Run:     ./problem3 
  *
  * Input:   none
- * Output:  Times for each of the three runs
+ * Output:  Run times for each of the three runs
  *
  * Notes:
- *    1.    
+ *    1.    Uncomment the one you want to run
  *
  */
 
@@ -48,22 +46,22 @@ int64_t foo(int64_t i);
 
 int main(int argc, char* argv[]){
     
-    // printf("Problem 3a:\n");
-    // problem3_a();
-    // printf("\nProblem 3b:\n");
+    printf("\nProblem 3a:\n");
+    problem3_a();
+    printf("\nProblem 3b:\n");
     // problem3_b();
-    // printf("Cannot be done in parallel as is.\n");
-    // printf("Problem 3c:\n");
-    // problem3_c();
-    // printf("Problem 3d:\n");
-    // problem3_d();
-    // printf("Problem 3e:\n");
-    // problem3_e();
-    // printf("Problem 3f:\n");
-    // problem3_f();
-    printf("Problem 3g:\n");
+    printf("Cannot be done in parallel as is.\n");
+    printf("\nProblem 3c:\n");
+    problem3_c();
+    printf("\nProblem 3d:\n");
+    problem3_d();
+    printf("\nProblem 3e:\n");
+    problem3_e();
+    printf("\nProblem 3f:\n");
+    problem3_f();
+    printf("\nProblem 3g:\n");
     problem3_g();
-    printf("Problem 3h:\n");
+    printf("\nProblem 3h:\n");
     problem3_h();
 
     printf("\nDone with problem 3...\n");
@@ -367,7 +365,7 @@ void problem3_f(){
     t1 = high_resolution_clock::now();
     // OMP implementation    
     dotp = 0;
-    #pragma omp for
+    #pragma omp for // reduction(+: dotp)
     for(i = 0; i < n; i++){
         dotp += a[i] * b[i];
     }
@@ -390,22 +388,19 @@ void problem3_g(){
 //     a[i] = a[i] + a[i-k];
 #ifdef DEBUG    
     int64_t n = 12;
+    int64_t k = 2;
 #else
-    int64_t n = 60000;
+    int64_t n = 600000;
+    int64_t k = 200000;
 #endif
     uint64_t a[n] = {};
     int64_t i = 0;
-    int64_t k = 2;
 
     // Setup array
     for(i = 0; i < n; ++i){
         a[i] = i + 1;
     }
     i = 4;
-
-    // for(int kappa = 0; kappa < n; ++kappa){
-    //     printf("a[%d]: %" PRIi64 "\n", kappa, a[kappa]);
-    // }
 
     // Sequential sanity check
     t1 = high_resolution_clock::now();
@@ -416,7 +411,7 @@ void problem3_g(){
     run_time = duration_cast<duration<double>>(t2 - t1);
     for(int64_t j = 0; j < n; ++j){
 #ifdef DEBUG
-        printf("a[%" PRIi64 "]: %" PRIi64 "\n", j, a[i]);
+        printf("a[%" PRIi64 "]: %" PRIi64 "\n", j, a[j]);
 #endif
         a[j] = 0;
     }
@@ -438,7 +433,7 @@ void problem3_g(){
     run_time = duration_cast<duration<double>>(t2 - t1);
     for(int64_t j = 0; j < n; ++j){
 #ifdef DEBUG
-        printf("a[%" PRIi64 "]: %" PRIi64 "\n", j, a[i]);
+        printf("a[%" PRIi64 "]: %" PRIi64 "\n", j, a[j]);
 #endif
         a[j] = j;
     }
@@ -448,11 +443,60 @@ void problem3_g(){
 
 
 void problem3_h(){
-    return;
+// h.
+// for(i = k; i < n; i++)
+//     a[i] = b * a[i-k];
+#ifdef DEBUG    
+    int64_t n = 12;
+#else
+    int64_t n = 600000;    
+#endif
+    uint64_t a[n] = {};
+    int64_t i = 0;
+    int64_t k = 2;
+    int64_t b = 5;
+
+    // Setup array
+    for(i = 0; i < n; ++i){
+        a[i] = i + 1;
+    }
+    i = 0;
+
+    // Sequential sanity check
+    t1 = high_resolution_clock::now();
+    for(i = k; i < n; ++i){
+        a[i] = b * a[i-k];
+    }
+    t2 = high_resolution_clock::now();
+    run_time = duration_cast<duration<double>>(t2 - t1);
+    for(int64_t j = 0; j < n; ++j){
+#ifdef DEBUG
+        printf("a[%" PRIi64 "]: %" PRIi64 "\n", j, a[j]);
+#endif
+        a[j] = 0;
+    }
+    printf("No OMP time : %.14f seconds\n", run_time.count());
+
+    // Setup array
+    for(i = 0; i < n; ++i){
+        a[i] = i + 1;
+    }
+    i = 0;
+
+    t1 = high_resolution_clock::now();
+    // OMP implementation     
+    #pragma omp for
+    for(i = k; i < n; ++i){
+        a[i] = b * a[i-k];
+    }
+    t2 = high_resolution_clock::now();
+    run_time = duration_cast<duration<double>>(t2 - t1);
+    for(int64_t j = 0; j < n; ++j){
+#ifdef DEBUG
+        printf("a[%" PRIi64 "]: %" PRIi64 "\n", j, a[j]);
+#endif
+        a[j] = j;
+    }
+    printf("OMP time    : %.14f seconds\n", run_time.count());
 }
 
-// h.
-// for(i=k; i<n; i++)
-// a[i] = b*a[i
-// -
-// k];
