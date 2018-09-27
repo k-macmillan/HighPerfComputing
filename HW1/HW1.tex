@@ -115,7 +115,7 @@ $relational$-$op$ & One of the following:\\
 \end{tabular}
 
 \subsection{Problem 3c}
-This code can be ran with OMP but it is dependent on whether or not $foo()$ is threadsafe.
+This code can be ran with $OMP$ but it is dependent on whether or not $foo()$ is threadsafe.
 \begin{minted}{c++}
     #pragma omp for
     for(i = 0; i < n; ++i) {
@@ -135,10 +135,17 @@ This problem is similar to 3c in that it is dependent on $foo()$. Nothing else i
 \end{minted}
 
 \subsection{Problem 3e}
-asdf
+Cannot be ran in parallel because the break. 
 
 \subsection{Problem 3f}
-asdf
+Standard use of $OMP$
+\begin{minted}{c++}
+    dotp = 0;
+    #pragma omp for
+    for(i = 0; i < n; i++){
+        dotp += a[i] * b[i];
+    }
+\end{minted}
 
 \subsection{Problem 3g}
 asdf
