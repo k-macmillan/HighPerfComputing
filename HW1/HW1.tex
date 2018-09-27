@@ -5,6 +5,7 @@
 \usepackage{graphicx}                   % PNGs
 \usepackage{algorithm}
 \usepackage{algpseudocode}              % Algorithms
+\usepackage{amsmath}                    % Rightarrow
 \usepackage{hyperref}                   % Hyperlinks
 \hypersetup{
     colorlinks,
@@ -72,13 +73,13 @@
     \begin{minipage}{0.7\textwidth}
         \centering
         \includegraphics[width=0.95\textwidth]{Problem2debug}
-        \caption{Example debug output.}
+        \caption[Example Debug Output]{Example debug output.}
         \label{fig:p2debug}
     \end{minipage}\hfill
     \begin{minipage}{0.3\textwidth}
         \centering
         \includegraphics[width=0.95\textwidth]{Problem2_60}
-        \caption{Better performance without reduction.}
+        \caption[Timed Reduction Methods]{Better performance without reduction.}
         \label{fig:p2}
     \end{minipage}
 \end{figure}
@@ -135,7 +136,7 @@ This problem is similar to 3c in that it is dependent on $foo()$. Nothing else i
 \end{minted}
 
 \subsection{Problem 3e}
-Cannot be ran in parallel because the break. 
+Cannot be ran in parallel because the $break$. 
 
 \subsection{Problem 3f}
 Standard use of $OMP$, though I feel that it didn't acutally use $OMP$. I tried to throw a reduction at it but I kept getting an error about $dotp$ being private. I threw a private local $sum$ into the for loop and added \textit{#pragma omp critical} followed by $dotp += sum$ but it gave no performance increase.
@@ -179,21 +180,22 @@ How many of the subtasks are dependent on other subtasks? If all $m$ subtasks re
 \textit{If the address of the nodes in a hypercube has n bits. How many nodes can it be at the most and how many edges does each node have? 
 Give an algorithm that routes a message from node u to node v in this k-node hypercube in no more than log(k) steps.}\\
 
-Hypercubes are generalized by dimensionality. A hypercube address containing n-bits will exist in n dimensions ($d$). The maximum number of nodes is determined by $d$, and is defined as $\[2^d\]$. A trait of hypercubes is that each node will have $d$ edges. The total amount of edges would be defined as $d * \[2^{d-1}\]$. The number of nodes you have to travel between $u$ and $v$ is equal to the number of differing bits.\\ 
+Hypercubes are generalized by dimensionality. A hypercube address containing $n$ bits will exist in $n$ dimensions ($d$). The maximum number of nodes is determined by $d$, and is defined as $2^d$. A trait of hypercubes is that each node will have $d$ edges. The total amount of edges would be defined as $d * 2^{d-1}$. The number of nodes you have to travel between $u$ and $v$ is equal to the number of differing bits.\\
+
 For example:
 \begin{itemize}
     \begin{tabular}{@{}llll}
-    \item 000 & $=>$ & 111 & : 3\\
-    \item 001 & $=>$ & 100 & : 2\\
-    \item 110 & $=>$ & 011 & : 2
+    \item 000 & \implies & 111 & : 3 edges\\
+    \item 001 & \implies & 100 & : 2 edges\\
+    \item 110 & \implies & 011 & : 2 edges
     \end{tabular}
-\end{itemize} 
+\end{itemize}
 
-\noindent Therefore a traversal algorithm would be:\\
+\noindent A traversal algorithm would be along the lines of Algorithm\ref{alg:1}\\
 \begin{algorithm}[H]
-\caption{Move from node $u$ to $v$}
-\label{alg:Prob5}
-\Statex Initialize Variables
+\caption{Hypercube Traversal}
+\label{alg:1}
+\Statex Move from node $u$ to $v$
 \State $i\gets 0$
 \State $current\_bit\gets u[i]$
 \State $left\_bit\gets u[i]$
@@ -207,7 +209,7 @@ For example:
 \EndWhile
 \end{algorithm}
 
-If built properly there will only be one node the algorithm can route to during the $route(current\_bit)$ section. Essentially we look at the left-most bit and if it is the same we move to the next bit, if it is different we must move to a new node. There will only be one node available because if they are on the same dimension they would have the same bit in that slot. For example on a 3-dimensional hypercube 000 to 100 looks at the left bit and sees it is on a different dimension. There is only one node connected to 000 that follows the format 1xx, so that is the only place it can go. If we wanted to route from 000 to 010 we would identify we are on the correct 3rd dimension, then look at the middle bit. From there we would see a need to move in the second dimension. There is only one connected node that matches in the second dimension, so that is where it would go.
+If built properly there will only be one node the algorithm can route to during the $route(current\_bit)$ section. Essentially we look at the left-most bit and if it is the same we move to the next bit, if it is different we must move to a new node. There will only be one node available because if they are on the same dimension they would have the same bit in that slot. For example on a 3-dimensional hypercube $000 \implies 100$ looks at the left bit and sees it is on a different dimension. There is only one node connected to 000 that follows the format 1xx, so that is the only place it can go. If we wanted to route from $000 \implies 010$ we would identify we are on the correct 3rd dimension, then look at the middle bit. From there we would see a need to move in the second dimension. There is only one connected node that matches in the second dimension, so that is where it would go.
 
 
 \newpage
@@ -215,9 +217,9 @@ If built properly there will only be one node the algorithm can route to during 
 \textit{Do a search on Shuffle-exchange network topology.  
 Draw the network with 16 processor nodes (carefully numbering each node binary and showing what is a shuffle link, what is an exchange link).  If k is the number of digits in the binary address, how many nodes (n) are there?  With n nodes what is the diameter (d) of the networks, the bisection width (b) and how many edges/node?}\\
 
-When you first drew a shuffle-exchange network, also sometimes called a \href{https://en.wikipedia.org/wiki/Butterfly_network}{butterfly network}, I immediately thought that looked like a sorter I came up with in 300. I later learned that sort wasn't something I had uniquely developed and was in fact a \href{https://en.wikipedia.org/wiki/Bitonic_sorter}{bitonic sort}.\\
+When you first drew a shuffle-exchange network, also sometimes called a \href{https://en.wikipedia.org/wiki/Butterfly_network}{butterfly network}, I immediately thought that looked like a sorter I came up with in CSC300. I later learned that sort wasn't something I had uniquely developed and was in fact a \href{https://en.wikipedia.org/wiki/Bitonic_sorter}{bitonic sort}.\\
 
-If there are $k$ digits in the address then there will be a maximum of $(k + 1) * 2^k$ nodes. With $n$ nodes the diameter will be $2 * k$. If the network is setup to wrap around then the diameter could be $k$. The bisection is $k + 1$. Most nodes would contain $4 edges$, where two come from ``below'' and two come from ``above''. The boundary nodes would contain $2 edges$, ethier connecting ``up'' or ``down''.
+If there are $k$ digits in the address then there will be a maximum of \textit{(k + 1) *} $2^k$ nodes. With $n$ nodes the diameter will be \textit{2 * k}. If the network is setup to wrap around then the diameter could be $k$. Bisection on butterfly networks is easy to see, visually, and is defined as \textit{k + 1}. Most nodes would contain \textit{4 edges}, where two come from ``below'' and two come from ``above''. The boundary nodes would contain \textit{2 edges}, ethier connecting ``up'' or ``down''.
 
 
 \end{document}
