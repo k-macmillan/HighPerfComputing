@@ -124,7 +124,15 @@ This code can be ran with OMP but it is dependent on whether or not $foo()$ is t
 \end{minted}
 
 \subsection{Problem 3d}
-asdf
+This problem is similar to 3c in that it is dependent on $foo()$. Nothing else is preventing this from being made parallel. Only comparisons and assignments are used. Access of $b[i]$ is fine because nothing is writing to it so there is no opportunity for trouble.
+\begin{minted}{c++}
+    #pragma omp for
+    for(i = 0; i < n; ++i) {
+        a[i] = foo(i);
+        if(a[i] < b[i])
+            a[i] = b[i];
+    }
+\end{minted}
 
 \subsection{Problem 3e}
 asdf
