@@ -55,6 +55,7 @@ dkms.conf
 *.aux
 *.fdb_latexmk
 *.fls
+*.loa
 *.lof
 *.log
 *.toc

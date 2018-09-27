@@ -186,7 +186,7 @@ Draw the network with 16 processor nodes (carefully numbering each node binary a
 
 When you first drew a shuffle-exchange network, also sometimes called a \href{https://en.wikipedia.org/wiki/Butterfly_network}{butterfly network}, I immediately thought that looked like a sorter I came up with in 300. I later learned that sort wasn't something I had uniquely developed and was in fact a \href{https://en.wikipedia.org/wiki/Bitonic_sorter}{bitonic sort}.\\
 
-If there are $k$ digits in the address then there will be a maximum of $(k + 1) * 2^k$ nodes. With $n$ nodes the diameter will be $2 * k$. If the network is setup to wrap around then the diameter could be $k$. The bisection is $k + 1$. Most nodes would contain $4 edges$. The boundary nodes would contain fewer edges.
+If there are $k$ digits in the address then there will be a maximum of $(k + 1) * 2^k$ nodes. With $n$ nodes the diameter will be $2 * k$. If the network is setup to wrap around then the diameter could be $k$. The bisection is $k + 1$. Most nodes would contain $4 edges$, where two come from ``below'' and two come from ``above''. The boundary nodes would contain $2 edges$, ethier connecting ``up'' or ``down''.
 
 
 \end{document}
