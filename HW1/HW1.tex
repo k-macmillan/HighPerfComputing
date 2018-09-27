@@ -30,13 +30,12 @@
 \tableofcontents
 \addcontentsline{toc}{section}{Table of Contents}
 
-
 \newpage
 \listoffigures
-\addcontentsline{toc}{section}{\listfigurename}
-\listofalgorithms
-\addcontentsline{toc}{section}{\listfigurename}
+\addcontentsline{toc}{section}{List of Figures}
 
+\listofalgorithms
+\addcontentsline{toc}{section}{List of Algorithms}
 
 \newpage
 \pagenumbering{arabic}  % Set content page numbering to arabic numerals
@@ -87,7 +86,9 @@
 As can be seen in the figures the sums are performing as expected. An interesting, and expected outcome is that in Figure~\ref{fig:p2debug} it takes 0.06 seconds to run $OMP$ and $No\ Reduc$ but in Figure~\ref{fig:p2} it takes 0.05 seconds. The $No\ OMP$ takes 0.40 seconds regardless. The reason for this behavior is that $OMP$ uses the cores you give it and at the time of recording the first figure the browser was open and running a video. When I recorded the second Figure I had closed my browser to maximize performance for multi-core processing. The $No\ OMP$ section of code was only running on one core, so it did not care that I had a video playing.
 
 
+\newpage
 \section{Problem 3}
+Please see my \href{https://github.com/macattackftw/HighPerfComputing}{repository} for the full code breakdown for \href{https://github.com/macattackftw/HighPerfComputing/blob/master/HW1/problem3.cpp}{this problem}.
 \subsection{Problem 3a}
 \begin{minted}{c++}
     #pragma omp for
@@ -138,9 +139,12 @@ asdf
 asdf
 
 
-
+\newpage
 \section{Problem 4}
-asdf
+\textit{Given a task that can be divided into m subtasks, each requiring one unit of time, how much time is needed for an m-stage pipeline to process n tasks?}\\
+
+How many of the subtasks are dependent on other subtasks? If all $m$ subtasks require the previous subtask then $m * n$ time is needed to process n tasks. If they can all be ran independently and if we have enough threads we can run it in $n$ time. It is more likely that we will have some combination of subtasks that require other subtask completion, therefore the only blanket assumption that can be safely made is that it will take $m * n$ time.
+
 
 
 \newpage
