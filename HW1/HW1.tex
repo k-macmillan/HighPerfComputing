@@ -217,9 +217,33 @@ If built properly there will only be one node the algorithm can route to during 
 \textit{Do a search on Shuffle-exchange network topology.  
 Draw the network with 16 processor nodes (carefully numbering each node binary and showing what is a shuffle link, what is an exchange link).  If k is the number of digits in the binary address, how many nodes (n) are there?  With n nodes what is the diameter (d) of the networks, the bisection width (b) and how many edges/node?}\\
 
-When you first drew a shuffle-exchange network, also sometimes called a \href{https://en.wikipedia.org/wiki/Butterfly_network}{butterfly network}, I immediately thought that looked like a sorter I came up with in CSC300. I later learned that sort wasn't something I had uniquely developed and was in fact a \href{https://en.wikipedia.org/wiki/Bitonic_sorter}{bitonic sort}.\\
+% I was 100% wrong, shuffle is not butterfly!
+% When you first drew a shuffle-exchange network, also sometimes called a \href{https://en.wikipedia.org/wiki/Butterfly_network}{butterfly network}, I immediately thought that looked like a sorter I came up with in CSC300. I later learned that sort wasn't something I had uniquely developed and was in fact a \href{https://en.wikipedia.org/wiki/Bitonic_sorter}{bitonic sort}.\\
 
-If there are $k$ digits in the address then there will be a maximum of \textit{(k + 1) *} $2^k$ nodes. With $n$ nodes the diameter will be \textit{2 * k}. If the network is setup to wrap around then the diameter could be $k$. Bisection on butterfly networks is easy to see, visually, and is defined as \textit{k + 1}. Most nodes would contain \textit{4 edges}, where two come from ``below'' and two come from ``above''. The boundary nodes would contain \textit{2 edges}, ethier connecting ``up'' or ``down''.
+% If there are $k$ digits in the address then there will be a maximum of \textit{(k + 1) *} $2^k$ nodes. With $n$ nodes the diameter will be \textit{2 * k}. If the network is setup to wrap around then the diameter could be $k$. Bisection on butterfly networks is easy to see, visually, and is defined as \textit{k + 1}. Most nodes would contain \textit{4 edges}, where two come from ``below'' and two come from ``above''. The boundary nodes would contain \textit{2 edges}, ethier connecting ``up'' or ``down''.
 
+\noindent There are a plethora of ways to make a shuffle-exchange network topology, such as:
+\begin{itemize}
+    \item Banyan
+    \item Omega
+    \item Indirect binary
+\end{itemize}
 
+\noindent In the \textit{omega} shuffle-exchange we can expect the following:
+\begin{itemize}
+    \item With $k$ bits in the address we can expect there to be $2^k$ input nodes $n$
+    \item We can expect $n / 2 * log_2(n)$ shuffle-exchange nodes.
+    \item Given the above, we expect a diameter $d$ to equal $k$.
+    \item The bisection width is the number of inputs, $n$.
+    \item There are \textit{4 edges} per node.
+\end{itemize}
+
+\noindent So for our example problem with 16 processor nodes:
+\begin{itemize}
+    \item We have $k = 4$, $n = 16$
+    \item $16 / 2 * 4$, or 16 shuffle-exchange nodes
+    \item A diameter $d = 4$
+    \item Bisection width of 16
+    \item \textit{4 edges} per shuffle-exchange node
+\end{itemize}
 \end{document}
