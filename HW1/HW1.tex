@@ -229,7 +229,7 @@ Draw the network with 16 processor nodes (carefully numbering each node binary a
     \item Indirect binary
 \end{itemize}
 
-\noindent In the \textit{omega} shuffle-exchange we can expect the following:
+\noindent In the shuffle-exchange we can expect the following:
 \begin{itemize}
     \item With $k$ bits in the address we can expect there to be $2^k$ input nodes $n$
     \item We can expect $n / 2 * log_2(n)$ shuffle-exchange nodes.
@@ -241,7 +241,7 @@ Draw the network with 16 processor nodes (carefully numbering each node binary a
 \noindent So for our example problem with 16 processor nodes:
 \begin{itemize}
     \item We have $k = 4$, $n = 16$
-    \item $16 / 2 * 4$, or 16 shuffle-exchange nodes
+    \item $16 / 2 * 4$, or 32 shuffle-exchange nodes
     \item A diameter $d = 4$
     \item Bisection width of 16
     \item \textit{4 edges} per shuffle-exchange node
