@@ -23,6 +23,8 @@
 #include <stdlib.h>     // exit() & strtoull
 #include <omp.h>        // Multithreading
 
+const uint32_t UMAX = 4294967295;
+
 
 /*------------------------------------------------------------------
  * Function:  Usage
@@ -43,7 +45,7 @@ void Usage(char* prog_name) {
  * Purpose:   Prints the primes found by the sieve
  * In arg:    visited[], integers[], size
  */
-void Printout(bool* visited, uint32_t* integers, uint32_t size) {
+void Printout(bool* visited, uint32_t* integers, uint32_t size, double time) {
     // Printing count variables
     uint8_t count = 0;
     uint32_t p_count = 0;
@@ -60,7 +62,7 @@ void Printout(bool* visited, uint32_t* integers, uint32_t size) {
         }
         
     }
-    printf("\n");
+    printf("\nElapsed time = %f ms\n", time);
 }
 
 
@@ -75,7 +77,7 @@ int main(int argc, char **argv){
         Usage(argv[0]);
     }
     uint32_t n = strtoul(argv[1], NULL, 10) + 1u;
-    if (n > 10000000){
+    if (n > 10000001){
         Usage(argv[0]);
     }
 
@@ -100,22 +102,28 @@ int main(int argc, char **argv){
     // OMP version
     while (p < n - 1){
         begin = omp_get_wtime();
-        #pragma omp for schedule(static)
+        #pragma omp parallel for //num_threads(omp_get_num_procs()) schedule(static, 8)
         for (uint32_t i = p + p; i < n; i += p){
             visited[i] = true;  // Just set it regardless
         }
-        end = omp_get_wtime();
-        time += (end - begin) * 1000.0;
+        
 
         // Cannot OMP this one...could store lowest for each an then find lowest in a critical step
-        for (uint32_t i = p + 1; i < n; ++i){
-            
+        uint32_t lowest = UMAX;
+        #pragma omp parallel for num_threads(8) //schedule(static, 8) //private(lowest)
+        for (uint32_t i = p + 1; i < n; ++i){     
+            uint32_t low = UMAX;       
             if (visited[i] == false){
-                p = i;
-                break;
+                low = i;
             }
-            p = i;
+            #pragma omp critical
+            if (low < lowest){
+                lowest = low;
+            }
         }
+        end = omp_get_wtime();
+        time += (end - begin) * 1000.0;
+        p = lowest;
     }    
 
 
@@ -126,8 +134,7 @@ int main(int argc, char **argv){
         for (uint32_t i = p + p; i < n; i += p){
             visited[i] = true;  // Just set it regardless
         }
-        end = omp_get_wtime();
-        time += (end - begin) * 1000.0;
+        
         // Cannot OMP this one...could store lowest for each an then find lowest in a critical step
         for (uint32_t i = p + 1; i < n; ++i){
             
@@ -137,10 +144,12 @@ int main(int argc, char **argv){
             }
             p = i;
         }
+        end = omp_get_wtime();
+        time += (end - begin) * 1000.0;
     }
 
 #endif
 
-    Printout(visited, integers, n);
+    Printout(visited, integers, n, time);
     return 0;
 }
