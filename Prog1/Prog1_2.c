@@ -1,3 +1,21 @@
+/* File:     Prog1_2.c
+ * Purpose:  Find all primes up to a given integer
+ *
+ *              0: 2 3 5 7 11 13
+ *
+ * Compile:  gcc -Wall -fopenmp -o p2 Prog1_2.c -lm
+ *           gcc -Wall -fopenmp -o p2 -DOMP Prog1_2.c -lm
+ * Run:      ./p2 <n>
+ *           Where n is the number to check up to, not exceeding 10000000
+ *
+ * Input:    n            
+ * Output:   All prime numbers up to n
+ *
+ * Notes:
+ *    1.     Run with -DOMP to run with OMP
+ *
+ */        
+
 #include <inttypes.h>   // Better integer functionality
 #include <stdbool.h>    // Boolean in C
 #include <math.h>       // Square root
