@@ -19,8 +19,13 @@ void Usage(char* prog_name) {
 }  /* Usage */
 
 
-void Printout(bool* visited, uint32_t* integers, uint32_t size) {
 
+/*------------------------------------------------------------------
+ * Function:  Printout
+ * Purpose:   Prints the primes found by the sieve
+ * In arg:    visited[], integers[], size
+ */
+void Printout(bool* visited, uint32_t* integers, uint32_t size) {
     // Printing count variables
     uint8_t count = 0;
     uint32_t p_count = 0;
@@ -41,6 +46,12 @@ void Printout(bool* visited, uint32_t* integers, uint32_t size) {
 }
 
 
+
+/*------------------------------------------------------------------
+ * Function:  main
+ * Purpose:   Sets up the problem and runs the sieve
+ * In arg:    argc, argv
+ */
 int main(int argc, char **argv){
     if (argc != 2){
         Usage(argv[0]);
