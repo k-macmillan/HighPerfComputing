@@ -1,12 +1,29 @@
 #include <inttypes.h>   // Better integer functionality
 #include <stdio.h>      // Printing to console
 #include <omp.h>        // Multithreading
+#include <stdbool.h>    // Booleans
 
 
+uint8_t EXTRACT_BIT(uint16_t n, uint8_t i);
+void PrintV(uint8_t *v);
 
-/* Return 1 i
-f 'i'th bit of 'n' is 1; 0 otherwise */
-#define EXTRACT_BIT(n,i) ((n&(1<<i))?1:0)
+int main(int argc, char **argv){
+    uint16_t arg = 65535u;
+    uint8_t v[16];
+
+    for (uint8_t i = 0; i < 16; ++i){
+        v[i] = EXTRACT_BIT(arg, i);
+    }
+
+    PrintV(v);
+}
+
+void PrintV(uint8_t *v){
+    for (uint8_t i = 0; i < 16; ++i){
+        printf("v[%" PRIu8 "]: %" PRIu8 "\n", i, v[i]);
+    }
+}
+
 /* Check if a given input produces TRUE (a one) */
 int check_circuit (int id, int z){
     int v[16];        /* Each element is a bit of z */
@@ -30,3 +47,11 @@ int check_circuit (int id, int z){
     }
 }
 
+
+/*------------------------------------------------------------------
+ * Function:  EXTRACT_BIT
+ * Purpose:   Shifts 1 i bits over and ands it with n, giving a 1 or 0
+ * In arg:    n, i
+ * Out arg:   1 or 0
+ */
+uint8_t inline EXTRACT_BIT(uint16_t n, uint8_t i){return n & 1 << i ? 1 : 0;}
