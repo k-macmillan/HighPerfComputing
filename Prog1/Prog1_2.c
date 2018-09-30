@@ -76,9 +76,9 @@ int main(int argc, char **argv){
     uint32_t n = strtoul(argv[1], NULL, 10) + 1u;
 
     // Don't allow users to go higher than 10,000,000
-    // if (n > 10000001){
-        // Usage(argv[0]);
-    // }
+    if (n > 10000001){
+        Usage(argv[0]);
+    }
 
     // Timing
     double begin = 0.0;
