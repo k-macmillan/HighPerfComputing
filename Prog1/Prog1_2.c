@@ -23,8 +23,6 @@
 #include <stdlib.h>     // exit() & strtoull
 #include <omp.h>        // Multithreading
 
-const uint32_t UMAX = 4294967295;
-
 
 /*------------------------------------------------------------------
  * Function:  Usage
@@ -43,28 +41,27 @@ void Usage(char* prog_name) {
 /*------------------------------------------------------------------
  * Function:  Printout
  * Purpose:   Prints the primes found by the sieve
- * In arg:    visited[], integers[], size
+ * In arg:    primes[], integers[], size
  */
-void Printout(bool* visited, uint32_t* integers, uint32_t size, double time, uint8_t runs) {
+void Printout(bool *primes, uint32_t size, double time, uint8_t runs) {
     // Printing count variables
     uint8_t count = 0;
-    uint32_t p_count = 0;
+    int32_t p_count = 0;
 
-    for (uint32_t i = 0; i < size; ++i){
+    for (int32_t i = 2; i < size; ++i){
         if (count == 0){
-            printf("\n%" PRIu32 ": ", p_count);
+            printf("\n%*" PRIu32 ": ",6, p_count);
             p_count += 10;
             count = 10;
         }
-        if (visited[i] == false){
-            printf("%" PRIu32 " ", integers[i]);
+        if (primes[i] == true){
+            printf("%" PRIu32 " ", i);
             --count;
         }
         
     }
     printf("\nElapsed time = %f ms\n", time / runs);
 }
-
 
 
 /*------------------------------------------------------------------
@@ -77,6 +74,8 @@ int main(int argc, char **argv){
         Usage(argv[0]);
     }
     uint32_t n = strtoul(argv[1], NULL, 10) + 1u;
+
+    // Don't allow users to go higher than 10,000,000
     if (n > 10000001){
         Usage(argv[0]);
     }
@@ -85,95 +84,58 @@ int main(int argc, char **argv){
     double begin = 0.0;
     double end = 0.0;
     double time = 0.0;
-    uint8_t runs = 10;
-    // Initialize variables and allocate arrays
-    uint32_t p = 2u;                // Represents a prime number
-    bool *visited = (bool*) malloc(n * sizeof(bool));                //memory allocated using malloc
-    uint32_t *integers = (uint32_t*) malloc(n * sizeof(uint32_t));   //memory allocated using malloc
+    uint8_t runs = 20;
+
+    // Primes array information
+    uint32_t size = sqrt(n) + 1;
+    bool *primes = (bool*) malloc(n * sizeof(bool));               //memory allocated using malloc
     
-    // Initialize arrays
-    for (uint32_t i = 0; i < n; ++i){
-        integers[i] = i;
-        visited[i] = false;
-    }
-    // Ignore 1 and 2
-    visited[0] = true;
-    visited[1] = true;
     
 #ifdef OMP
     // OMP version
+    omp_set_nested(1);
     for (uint8_t k = 0; k < runs; ++k){
-        while (p < n - 1){
-            begin = omp_get_wtime();
-            #pragma omp parallel for //num_threads(omp_get_num_procs()) schedule(static, 8)
-            for (uint32_t i = p + p; i < n; i += p){
-                visited[i] = true;  // Just set it regardless
-            }
-            
-
-            // Cannot OMP this one...could store lowest for each an then find lowest in a critical step
-            uint32_t lowest = UMAX;
-            #pragma omp parallel for num_threads(8) //schedule(static, 8) //private(lowest)
-            for (uint32_t i = p + 1; i < n; ++i){     
-                uint32_t low = UMAX;       
-                if (visited[i] == false){
-                    low = i;
-                }
-                #pragma omp critical
-                if (low < lowest){
-                    lowest = low;
-                }
-            }
-            end = omp_get_wtime();
-            time += (end - begin) * 1000.0;
-            p = lowest;
-        }    
-        // Reset sieve
+        // Reset array
         for (uint32_t i = 0; i < n; ++i){
-            integers[i] = i;
-            visited[i] = false;
+            primes[i] = true;
         }
-        // Ignore 1 and 2
-        visited[0] = true;
-        visited[1] = true;
-        p = 2u;
+
+        begin = omp_get_wtime();
+        #pragma omp parallel for num_threads(8) schedule(dynamic)
+        for (uint32_t i = 2; i < size; ++i){
+            if (primes[i]){
+                for (uint32_t j = i * i; j < n; j += i){
+                    primes[j] = false;
+                }
+            }
+        }
+        end = omp_get_wtime();
+        time += (end - begin) * 1000.0;
     }
 
 
 #else
-        // No OMP version
+    // No OMP version
     for (uint8_t k = 0; k < runs; ++k){
-        while (p < n - 1){
-            begin = omp_get_wtime();
-            for (uint32_t i = p + p; i < n; i += p){
-                visited[i] = true;  // Just set it regardless
-            }
-            
-            // Cannot OMP this one...could store lowest for each an then find lowest in a critical step
-            for (uint32_t i = p + 1; i < n; ++i){
-                
-                if (visited[i] == false){
-                    p = i;
-                    break;
-                }
-                p = i;
-            }
-            end = omp_get_wtime();
-            time += (end - begin) * 1000.0;
-        }
-        // Reset sieve
+        // Reset array
         for (uint32_t i = 0; i < n; ++i){
-            integers[i] = i;
-            visited[i] = false;
+            primes[i] = true;
         }
-        // Ignore 1 and 2
-        visited[0] = true;
-        visited[1] = true;
-        p = 2u;
+
+        begin = omp_get_wtime();
+        for (uint32_t i = 2; i < size; ++i){
+            if (primes[i]){
+                for (uint32_t j = i * i; j < n; j += i){
+                    primes[j] = false;
+                }
+            }
+        }
+        end = omp_get_wtime();
+        time += (end - begin) * 1000.0;        
     }
 
 #endif
 
-    Printout(visited, integers, n, time, runs);
+    Printout(primes, n, time, runs);
     return 0;
 }
