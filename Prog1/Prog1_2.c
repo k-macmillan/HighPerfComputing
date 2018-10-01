@@ -1,5 +1,12 @@
-/* File:     Prog1_2.c
- * Purpose:  Find all primes up to a given integer
+/* File:        Prog1_2.c
+ *
+ * Author:      Kyle MacMillan
+ *
+ * Assignment:  Programming Assignment #1
+ *
+ * Course:      CSC 792 - High Performance Computing
+ *
+ * Purpose:     Find all primes up to a given integer
  *
  *              0: 2 3 5 7 11 13
  *
@@ -87,8 +94,8 @@ int main(int argc, char **argv){
     uint8_t runs = 20;
 
     // Primes array information
-    uint32_t size = sqrt(n) + 1;
-    bool *primes = (bool*) malloc(n * sizeof(bool));               //memory allocated using malloc
+    uint32_t size = sqrt(n) + 1;                        // Maximum iteration
+    bool *primes = (bool*) malloc(n * sizeof(bool));    // Memory allocation
     
     
 #ifdef OMP
@@ -136,6 +143,7 @@ int main(int argc, char **argv){
 
 #endif
 
+    // Print and clean up memory
     Printout(primes, n, time, runs);
     free(primes);
     return 0;

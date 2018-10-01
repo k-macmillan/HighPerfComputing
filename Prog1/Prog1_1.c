@@ -1,15 +1,21 @@
-/* File:     Prog1_1.c
- * Purpose:  Find all primes up to a given integer
+/* File:        Prog1_1.c
  *
- *              0: 2 3 5 7 11 13
+ * Author:      Kyle MacMillan
  *
- * Compile:  gcc -Wall -fopenmp -o p1 Prog1_1.c
-             gcc -Wall -fopenmp -o p1 -DGRAD Prog1_1.c
- * Run:      ./p2
+ * Assignment:  Programming Assignment #1
  *
- * Output:   Number of 16 bit combinations that output a 1
+ * Course:      CSC 792 - High Performance Computing
  *
- * Notes:
+ * Purpose:     Finds all binary sequences that produce an output of 1. Times
+ *              how long it takes and prints them to the screen.
+ *
+ * Compile:     gcc -Wall -fopenmp -o p1 Prog1_1.c
+                gcc -Wall -fopenmp -o p1 -DGRAD Prog1_1.c
+ * Run:         ./p1
+ *
+ * Output:      Number of 16 bit combinations that output a 1
+ *
+ * Notes:       None, runs like a dream
  *
  */        
 #include <inttypes.h>   // Better integer functionality
