@@ -1,14 +1,33 @@
+/* File:     Prog1_1.c
+ * Purpose:  Find all primes up to a given integer
+ *
+ *              0: 2 3 5 7 11 13
+ *
+ * Compile:  gcc -Wall -fopenmp -o p1 Prog1_1.c
+ * Run:      ./p2
+ *
+ * Output:   Number of 16 bit combinations that output a 1
+ *
+ * Notes:
+ *
+ */        
 #include <inttypes.h>   // Better integer functionality
 #include <stdio.h>      // Printing to console
 #include <omp.h>        // Multithreading
-#include <stdbool.h>    // Booleans
 
 
 uint8_t check_circuit (int id, uint16_t z);
-void PrintV(uint8_t *v);
 uint16_t EXTRACT_BIT(uint16_t n, uint16_t i);
 
 
+/*------------------------------------------------------------------
+ * Function:  main
+ * Purpose:   Runs 65536 combinations against a circuit, counting the number 
+ *            that output a 1. Also prints out any bit combinations that 
+ *            produce a 1.
+ *
+ * In arg:    argc, argv
+ */
 int main(int argc, char **argv){
     const uint16_t MAX_VAL = 65535;
     uint16_t sum = 0;
@@ -21,7 +40,9 @@ int main(int argc, char **argv){
 
     begin = omp_get_wtime();
     for (uint16_t k = 0; k < runs; ++k){
-        #pragma omp parallel for num_threads(omp_get_num_procs()) schedule(static, 1) reduction(+: sum)
+        #pragma omp parallel for num_threads(omp_get_num_procs())\
+                                 schedule(static, 1)\
+                                 reduction(+: sum)
         for (uint32_t i = 0; i < MAX_VAL; ++i){
             sum += check_circuit(omp_get_thread_num(), i);
         }
@@ -31,13 +52,13 @@ int main(int argc, char **argv){
     printf("Found %" PRIu16 " valid combinations in %f ms.\n", sum / runs, time / runs);
 }
 
-void PrintV(uint8_t *v){
-    for (uint8_t i = 0; i < 16; ++i){
-        printf("v[%" PRIu8 "]: %" PRIu8 "\n", i, v[i]);
-    }
-}
 
-/* Check if a given input produces TRUE (a one) */
+/*------------------------------------------------------------------
+ * Function:  check_circuit
+ * Purpose:   Checks if the input integer: z will yield a one from the circuit.
+ * In arg:    id, z
+ * Out arg:   1 or 0
+ */
 uint8_t check_circuit (int id, uint16_t z){
     uint8_t v[16];
 
