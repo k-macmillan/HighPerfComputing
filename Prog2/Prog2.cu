@@ -35,6 +35,7 @@ int main(int argc, char **argv){
 }
 
 
+
 void testAdotB(){
     uint64_t n = BLK_SIZE;
     uint64_t bytes = n * sizeof(float);
@@ -271,9 +272,9 @@ void sanityCheck()
     cudaMemcpy(d_matrix1, h_matrix, bytes_sqrd, cudaMemcpyHostToDevice);
     cudaMemcpy(d_vec, h_vec, bytes, cudaMemcpyHostToDevice);
 
-    matDotVec<<<1, n * n>>>(d_matrix1, d_matrix2, d_vec, n);
+    matDotVec<<<9, 1>>>(d_matrix1, d_matrix2, d_vec, n);
     cudaDeviceSynchronize();
-    matAddElementWise<<<1, n>>>(d_matrix2, d_vec, n);
+    matAddElementWise<<<9, 1>>>(d_matrix2, d_vec, n);
     cudaDeviceSynchronize();
 
     // slow test:
@@ -356,7 +357,7 @@ __global__ void slowDotVec(float *m1, float *arr, float *res, uint64_t size){
     // Assumes this is ran on one thread
     uint64_t row = 0;
     for (uint64_t i = 0; i < size; ++i){
-        res[i] = 0.0f;            
+        res[i] = 0.0f;
         for (uint64_t j = 0; j < size; ++j){
             res[i] += m1[row * size + j] * arr[j];
         }
