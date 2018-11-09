@@ -163,8 +163,10 @@ __global__ void matAddElementWise(float *m2, float *arr, uint16_t size){
     uint32_t x = blockIdx.x * blockDim.x + threadIdx.x;
     if (x < size * size){
         uint16_t arr_idx = x % size;
-        uint16_t max = arr_idx + size;
-        for (uint16_t i = arr_idx; i < max; ++i){
+        uint16_t mat_loc = arr_idx * size;
+        uint16_t max = mat_loc + size;
+        arr[arr_idx] = 0.0f;
+        for (uint16_t i = mat_loc; i < max; ++i){
             arr[arr_idx] += m2[i];
         }
     }
