@@ -5,15 +5,16 @@
 
 
 const uint16_t BLK_SIZE = 3;
+const uint16_t SANITY_N = 3;    // Size of sanity check matrix
 const float EPSILON = 0.0001;   // For sanity check: float == float
 
 void sanityCheck();
 bool resultCheck(float *arr1, float *arr2);
 void printArray(float *arr);
 
-// __global__ void matDotVec(float **m1, float **m2, float *arr, uint16_t size);
 __global__ void matDotVec(float *m1, float *m2, float *arr, uint16_t size);
 __global__ void matAddElementWise(float *m2, float *arr, uint16_t size);
+__global__ void slowDotVec(float *m1, float *arr, float *res, uint16_t size);
 
 int main(int argc, char **argv){
     sanityCheck();
@@ -24,7 +25,7 @@ int main(int argc, char **argv){
 
 void sanityCheck()
 {
-    uint16_t n = BLK_SIZE;
+    uint16_t n = SANITY_N;
     uint32_t bytes = n * sizeof(float);
     uint32_t ptr_bytes = n * sizeof(float*);        // Just being safe
     uint32_t bytes_sqrd = bytes * bytes;
@@ -36,6 +37,7 @@ void sanityCheck()
     float *d_matrix1;      // To store the data from host
     float *d_matrix2;      // To store the multiplication that happens
     float *d_vec;           // To store the data from host and result
+    float *d_vec2;           // To store the data from host and result
 
     float incr = 0.0;
     for (uint16_t i = 0; i < n * n; ++i){    
@@ -57,22 +59,35 @@ void sanityCheck()
     cudaMalloc((float**)&d_matrix1, bytes_sqrd);
     cudaMalloc((float**)&d_matrix2, bytes_sqrd);
     cudaMalloc((float**)&d_vec, bytes);
+    cudaMalloc((float**)&d_vec2, bytes);
     cudaMemcpy(d_matrix1, h_matrix, bytes_sqrd, cudaMemcpyHostToDevice);
     cudaMemcpy(d_vec, h_vec, bytes, cudaMemcpyHostToDevice);
 
     // Call CUDA function here...
-    matDotVec<<<1, n * n>>>(d_matrix1, d_matrix2, d_vec, n);
+    // matDotVec<<<1, n * n>>>(d_matrix1, d_matrix2, d_vec, n);
 
+    // cudaDeviceSynchronize();
+    // matAddElementWise<<<1, n>>>(d_matrix2, d_vec, n);
+    // cudaDeviceSynchronize();
+
+    // slow test:
+    slowDotVec<<<1, 1>>>(d_matrix1, d_vec, d_vec2, n);
     cudaDeviceSynchronize();
-    matAddElementWise<<<1, n>>>(d_matrix2, d_vec, n);
-    cudaDeviceSynchronize();
+    cudaMemcpy(h_vec, d_vec2, bytes, cudaMemcpyDeviceToHost);
+
+
+    cudaFree(d_vec);
+    cudaFree(d_vec2);
+    cudaFree(d_matrix1);
+    cudaFree(d_matrix2);
+    // end slow test
 
 
     // Copy result back to host & free memory
-    cudaMemcpy(h_vec, d_vec, bytes, cudaMemcpyDeviceToHost);
-    cudaFree(d_vec);
-    cudaFree(d_matrix1);
-    cudaFree(d_matrix2);
+    // cudaMemcpy(h_vec, d_vec, bytes, cudaMemcpyDeviceToHost);
+    // cudaFree(d_vec);
+    // cudaFree(d_matrix1);
+    // cudaFree(d_matrix2);
 
     if (resultCheck(expected, h_vec)){
         std::cout << "Sanity check PASSED!" << std::endl;
@@ -92,7 +107,7 @@ void sanityCheck()
 
 
 bool resultCheck(float *arr1, float *arr2){
-    for (uint16_t i = 0; i < BLK_SIZE; ++i){
+    for (uint16_t i = 0; i < SANITY_N; ++i){
         if (fabs(arr1[i] - arr2[i]) > EPSILON){            
             return false;
         }
@@ -104,7 +119,7 @@ bool resultCheck(float *arr1, float *arr2){
 
 
 void printArray(float *arr){
-    for (uint16_t i = 0; i < BLK_SIZE; ++i){
+    for (uint16_t i = 0; i < SANITY_N; ++i){
         std::cout << arr[i] << " ";
     }
     std::cout << std::endl;
@@ -120,14 +135,26 @@ __global__ void matDotVec(float *m1, float *m2, float *arr, uint16_t size){
 }
 
 __global__ void matAddElementWise(float *m2, float *arr, uint16_t size){
-    uint32_t x = blockIdx.x * blockDim.x + threadIdx.x;
-    if (x < size * size){
-        uint16_t arr_idx = x % size;
+    uint32_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx < size * size){
+        uint16_t arr_idx = idx % size;
         uint16_t mat_loc = arr_idx * size;
         uint16_t max = mat_loc + size;
         arr[arr_idx] = 0.0f;
         for (uint16_t i = mat_loc; i < max; ++i){
             arr[arr_idx] += m2[i];
         }
+    }
+}
+
+__global__ void slowDotVec(float *m1, float *arr, float *res, uint16_t size){
+    // Assumes this is ran on one thread
+    uint16_t row = 0;
+    for (uint16_t i = 0; i < size; ++i){
+        res[i] = 0.0f;            
+        for (uint16_t j = 0; j < size; ++j){
+            res[i] += m1[row * size + j] * arr[j];
+        }
+        ++row;
     }
 }
