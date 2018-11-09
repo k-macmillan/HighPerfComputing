@@ -25,11 +25,11 @@ __global__ void addMatrixFast(float *m1, float *m2, uint64_t size);
 __global__ void addMatrixSlow(float *m1, float *m2, uint64_t size);
 
 int main(int argc, char **argv){
-    // sanityCheck();
+    sanityCheck();
     srand (time(NULL));
-    // testAdotB();
-    // testSlowAdotB();
-    // gradProblemFast();
+    testAdotB();
+    testSlowAdotB();
+    gradProblemFast();
     gradProblemSlow();
     return 0;
 }
@@ -302,7 +302,6 @@ void sanityCheck()
         std::cout << "Sanity check FAILED!" << std::endl;
         
     }
-    printArray(h_vec);
 
     // Free up device memory allocations
     free(h_matrix);
