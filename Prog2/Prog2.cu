@@ -29,28 +29,15 @@ void sanityCheck()
     uint32_t ptr_bytes = n * sizeof(float*);        // Just being safe
     uint32_t bytes_sqrd = bytes * bytes;
 
-    // float **h_matrix = (float**)malloc(ptr_bytes);   // To store "Matrix A"
     float *h_matrix = (float*)malloc(ptr_bytes * ptr_bytes);   // To store "Matrix A"
     float *h_vec = (float*)malloc(bytes);           // To store "Vector B" and result
     float *expected = (float*)malloc(bytes);        // Sanity check array
 
-    // float **d_matrix1;      // To store the data from host
-    // float **d_matrix2;      // To store the multiplication that happens
     float *d_matrix1;      // To store the data from host
     float *d_matrix2;      // To store the multiplication that happens
     float *d_vec;           // To store the data from host and result
 
-    // Allocate memory
-    // for (uint16_t i = 0; i < n; ++i){
-    //     h_matrix[i] = (float*)malloc(bytes);
-    // }
-
     float incr = 0.0;
-    // for (uint16_t i = 0; i < n; ++i){
-    //     for (uint16_t j = 0; j < n; ++j){
-    //         h_matrix[i][j] = ++incr;
-    //     }
-    // }
     for (uint16_t i = 0; i < n * n; ++i){    
         h_matrix[i] = ++incr;
     }
@@ -79,17 +66,6 @@ void sanityCheck()
     cudaDeviceSynchronize();
     matAddElementWise<<<1, n>>>(d_matrix2, d_vec, n);
     cudaDeviceSynchronize();
-
-    // Testing...
-    cudaMemcpy(h_matrix, d_matrix2, bytes_sqrd, cudaMemcpyDeviceToHost);
-
-    for (uint16_t i = 0; i < n * n; ++i){
-        std::cout << h_matrix[i] << " ";
-    }
-    std::cout << std::endl;
-
-
-
 
 
     // Copy result back to host & free memory
@@ -135,24 +111,8 @@ void printArray(float *arr){
 }
 
 
-// __global__ void matDotVec(float **m1, float **m2, float *arr, uint16_t size){
-//     int row = blockIdx.y * blockDim.y + threadIdx.y;
-//     int col = blockIdx.x * blockDim.x + threadIdx.x;    
-
-//     if (row < size && col < size){
-//         m2[row][col] = m1[row][col] * arr[col];
-//     }
-// }
 
 __global__ void matDotVec(float *m1, float *m2, float *arr, uint16_t size){
-    // int row = blockIdx.y * blockDim.y + threadIdx.y;
-    // int col = blockIdx.x * blockDim.x + threadIdx.x;    
-
-    // if (row < size && col < size){
-    //     m2[row][col] = m1[row][col] * arr[col];
-    // }
-
-
     uint32_t idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (idx < size * size){
         m2[idx] = m1[idx] * arr[idx % size];
