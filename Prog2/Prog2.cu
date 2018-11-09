@@ -70,7 +70,7 @@ void sanityCheck()
     cudaMalloc((float**)&d_matrix2, bytes_sqrd);
     cudaMalloc((float**)&d_vec, bytes);
     cudaMemcpy(d_matrix1, h_matrix, bytes_sqrd, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_vec, h_vec, bytes, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_vec, expected, bytes, cudaMemcpyHostToDevice);
 
     // Call CUDA function here...
     matDotVec<<<1, n>>>(d_matrix1, n);
