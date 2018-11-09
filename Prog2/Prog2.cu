@@ -13,6 +13,7 @@ void printArray(float *arr);
 
 // __global__ void matDotVec(float **m1, float **m2, float *arr, uint16_t size);
 __global__ void matDotVec(float *m1, float *m2, float *arr, uint16_t size);
+__global__ void matAddElementWise(float *m2, float *arr, uint16_t size);
 
 int main(int argc, char **argv){
     sanityCheck();
@@ -28,24 +29,30 @@ void sanityCheck()
     uint32_t ptr_bytes = n * sizeof(float*);        // Just being safe
     uint32_t bytes_sqrd = bytes * bytes;
 
-    float **h_matrix = (float**)malloc(ptr_bytes);   // To store "Matrix A"
+    // float **h_matrix = (float**)malloc(ptr_bytes);   // To store "Matrix A"
+    float *h_matrix = (float*)malloc(ptr_bytes * ptr_bytes);   // To store "Matrix A"
     float *h_vec = (float*)malloc(bytes);           // To store "Vector B" and result
     float *expected = (float*)malloc(bytes);        // Sanity check array
 
-    float **d_matrix1;      // To store the data from host
-    float **d_matrix2;      // To store the multiplication that happens
+    // float **d_matrix1;      // To store the data from host
+    // float **d_matrix2;      // To store the multiplication that happens
+    float *d_matrix1;      // To store the data from host
+    float *d_matrix2;      // To store the multiplication that happens
     float *d_vec;           // To store the data from host and result
 
     // Allocate memory
-    for (uint16_t i = 0; i < n; ++i){
-        h_matrix[i] = (float*)malloc(bytes);
-    }
+    // for (uint16_t i = 0; i < n; ++i){
+    //     h_matrix[i] = (float*)malloc(bytes);
+    // }
 
     float incr = 0.0;
-    for (uint16_t i = 0; i < n; ++i){
-        for (uint16_t j = 0; j < n; ++j){
-            h_matrix[i][j] = ++incr;
-        }
+    // for (uint16_t i = 0; i < n; ++i){
+    //     for (uint16_t j = 0; j < n; ++j){
+    //         h_matrix[i][j] = ++incr;
+    //     }
+    // }
+    for (uint16_t i = 0; i < n * n; ++i){    
+        h_matrix[i] = ++incr;
     }
 
     // "Vector B"
@@ -67,19 +74,23 @@ void sanityCheck()
     cudaMemcpy(d_vec, h_vec, bytes, cudaMemcpyHostToDevice);
 
     // Call CUDA function here...
-    matDotVec<<<1, bytes_sqrd>>>(d_matrix1, d_matrix2, d_vec, n);
+    matDotVec<<<1, n * n>>>(d_matrix1, d_matrix2, d_vec, n);
 
     cudaDeviceSynchronize();
+    matAddElementWise<<<1, n>>>(d_matrix2, d_vec, n);
+    cudaDeviceSynchronize();
+
     // Testing...
     cudaMemcpy(h_matrix, d_matrix2, bytes_sqrd, cudaMemcpyDeviceToHost);
 
-    for (uint16_t i = 0; i < BLK_SIZE; ++i){
-        for (uint16_t j = 0; j < BLK_SIZE; ++j){
-            std::cout << h_matrix[i][j] << " ";
-        }
-        std::cout << std::endl;
+    for (uint16_t i = 0; i < n * n; ++i){
+        std::cout << h_matrix[i] << " ";
     }
     std::cout << std::endl;
+
+
+
+
 
     // Copy result back to host & free memory
     cudaMemcpy(h_vec, d_vec, bytes, cudaMemcpyDeviceToHost);
@@ -142,8 +153,19 @@ __global__ void matDotVec(float *m1, float *m2, float *arr, uint16_t size){
     // }
 
 
-    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    uint32_t idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (idx < size * size){
         m2[idx] = m1[idx] * arr[idx % size];
+    }
+}
+
+__global__ void matAddElementWise(float *m2, float *arr, uint16_t size){
+    uint32_t x = blockIdx.x * blockDim.x + threadIdx.x;
+    if (x < size * size){
+        uint16_t arr_idx = x % size;
+        uint16_t max = arr_idx + size;
+        for (uint16_t i = arr_idx; i < max; ++i){
+            arr[arr_idx] += m2[i];
+        }
     }
 }
