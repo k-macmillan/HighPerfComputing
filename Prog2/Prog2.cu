@@ -6,12 +6,14 @@
 #include <stdlib.h>     /* srand, rand */
 
 
-const uint64_t BLK_SIZE = 2048; // 8192
+const uint64_t BLK_SIZE = 1024; // Maximum matrix size
 const uint64_t SANITY_N = 3;    // Size of sanity check matrix
 const float EPSILON = 0.0001;   // For sanity check: float == float
 
 void testAdotB();
 void testSlowAdotB();
+void gradProblemFast();
+void gradProblemSlow();
 void sanityCheck();
 bool resultCheck(float *arr1, float *arr2);
 void printArray(float *arr);
@@ -19,12 +21,16 @@ void printArray(float *arr);
 __global__ void matDotVec(float *m1, float *m2, float *arr, uint64_t size);
 __global__ void matAddElementWise(float *m2, float *arr, uint64_t size);
 __global__ void slowDotVec(float *m1, float *arr, float *res, uint64_t size);
+__global__ void addMatrixFast(float *m1, float *m2, uint64_t size);
+__global__ void addMatrixSlow(float *m1, float *m2, uint64_t size);
 
 int main(int argc, char **argv){
     // sanityCheck();
     srand (time(NULL));
     // testAdotB();
-    testSlowAdotB();
+    // testSlowAdotB();
+    // gradProblemFast();
+    gradProblemSlow();
     return 0;
 }
 
@@ -62,6 +68,7 @@ void testAdotB(){
     int blockSize;
     int minGridSize;
     cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, matDotVec, 0, n); 
+    // std::cout << "Block size: " << blockSize << std::endl;
     uint64_t gridSize = (n + blockSize - 1) / blockSize; 
     matDotVec<<<gridSize, blockSize>>>(d_matrix1, d_matrix2, d_vec, n);
     cudaDeviceSynchronize();    // Just in case
@@ -127,6 +134,101 @@ void testSlowAdotB(){
     free(h_vec);
 }
 
+
+
+void gradProblemFast(){
+    uint64_t n = BLK_SIZE;
+    uint64_t bytes = n * sizeof(float);
+    uint64_t ptr_bytes = n * sizeof(float*);        // Just being safe
+    uint64_t bytes_sqrd = bytes * bytes;
+
+    float *h_matrix1 = (float*)malloc(ptr_bytes * ptr_bytes);   // To store "Matrix A"
+    float *h_matrix2 = (float*)malloc(ptr_bytes * ptr_bytes);   // To store "Matrix B"    
+
+    float *d_matrix1;       // To store the data from host and store result
+    float *d_matrix2;       // To store the data from host
+    
+
+    // Fill "Matrix A"
+    for (uint64_t i = 0; i < n * n; ++i){
+        h_matrix1[i] = rand() % 1000;
+    }
+
+    // Fill "Matrix B"
+    for (uint64_t i = 0; i < n * n; ++i){
+        h_matrix2[i] = rand() % 1000;
+    }
+
+    // Allocate CUDA memory and copy data to device
+    cudaMalloc((float**)&d_matrix1, bytes_sqrd);
+    cudaMalloc((float**)&d_matrix2, bytes_sqrd);
+    cudaMemcpy(d_matrix1, h_matrix1, bytes_sqrd, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_matrix2, h_matrix2, bytes_sqrd, cudaMemcpyHostToDevice);
+
+    int blockSize;
+    int minGridSize;
+    cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, matDotVec, 0, n); 
+    // std::cout << "Block size: " << blockSize << std::endl;
+    uint64_t gridSize = (n + blockSize - 1) / blockSize; 
+    addMatrixFast<<<gridSize, blockSize>>>(d_matrix1, d_matrix2, n * n);
+    cudaDeviceSynchronize();
+
+
+    // Copy result back to host
+    cudaMemcpy(h_matrix1, d_matrix1, bytes_sqrd, cudaMemcpyDeviceToHost);
+
+
+    // Free CUDA and host memory
+    cudaFree(d_matrix1);
+    cudaFree(d_matrix2);
+    free(h_matrix1);
+    free(h_matrix2);
+}
+
+
+void gradProblemSlow(){
+    uint64_t n = BLK_SIZE;
+    uint64_t bytes = n * sizeof(float);
+    uint64_t ptr_bytes = n * sizeof(float*);        // Just being safe
+    uint64_t bytes_sqrd = bytes * bytes;
+
+    float *h_matrix1 = (float*)malloc(ptr_bytes * ptr_bytes);   // To store "Matrix A"
+    float *h_matrix2 = (float*)malloc(ptr_bytes * ptr_bytes);   // To store "Matrix B"    
+
+    float *d_matrix1;       // To store the data from host and store result
+    float *d_matrix2;       // To store the data from host
+    
+
+    // Fill "Matrix A"
+    for (uint64_t i = 0; i < n * n; ++i){
+        h_matrix1[i] = rand() % 1000;
+    }
+
+    // Fill "Matrix B"
+    for (uint64_t i = 0; i < n * n; ++i){
+        h_matrix2[i] = rand() % 1000;
+    }
+
+    // Allocate CUDA memory and copy data to device
+    cudaMalloc((float**)&d_matrix1, bytes_sqrd);
+    cudaMalloc((float**)&d_matrix2, bytes_sqrd);
+    cudaMemcpy(d_matrix1, h_matrix1, bytes_sqrd, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_matrix2, h_matrix2, bytes_sqrd, cudaMemcpyHostToDevice);
+
+    addMatrixSlow<<<1, 1>>>(d_matrix1, d_matrix2, n * n);
+    cudaDeviceSynchronize();
+
+
+    // Copy result back to host
+    cudaMemcpy(h_matrix1, d_matrix1, bytes_sqrd, cudaMemcpyDeviceToHost);
+
+
+    // Free CUDA and host memory
+    cudaFree(d_matrix1);
+    cudaFree(d_matrix2);
+    free(h_matrix1);
+    free(h_matrix2);
+}
 
 
 void sanityCheck()
@@ -260,5 +362,20 @@ __global__ void slowDotVec(float *m1, float *arr, float *res, uint64_t size){
             res[i] += m1[row * size + j] * arr[j];
         }
         ++row;
+    }
+}
+
+
+__global__ void addMatrixFast(float *m1, float *m2, uint64_t size){
+    uint64_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (idx < size){
+        m1[idx] = m1[idx] + m2[idx];
+    }
+}
+
+__global__ void addMatrixSlow(float *m1, float *m2, uint64_t size){
+    for (uint64_t i = 0; i < size; ++i){
+        m1[i] = m1[i] + m2[i];
     }
 }
