@@ -48,7 +48,7 @@
 
 \section{Description of the program}
 \setcounter{page}{1} % Set the page counter to 3
-This writeup is for 
+This write-up is for 
 \href{https://www.mcs.sdsmt.edu/ckarlsso/csc410/fall18/csc410_PRG2.pdf}{Programming Assignment #2} 
 and the repository for my work is \href{https://github.com/macattackftw/HighPerfComputing/tree/master/Prog2}{here}.
 \\
@@ -72,7 +72,7 @@ greatly increases the usage range.
 
 All public functions, other than sanity check, return the 1D array result, but 
 is \textbf{free'd} on the next public function call so it is important to use 
-it before you lose it. The program intenionally allocates extra memory because 
+it before you lose it. The program intentionally allocates extra memory because 
 I wanted to keep the code clean. Extra memory allocation does not hamper the 
 performance testing because I did not include that in the measurement.
 
@@ -82,16 +82,16 @@ device.
 Users can specify a matrix/vector size or not, the program will run regardless. 
 I set a hard limit of matrix/vector size $n$ being 1024. It could have been 
 arbitrarily large and increased complexity arbitrarily. This limit was set to 
-keep my workload balanced and still produce a detailed writeup and useful 
+keep my workload balanced and still produce a detailed write-up and useful 
 class.
 
 
 \section{Description of the algorithms and libraries used}
 A $matrix$ x $vector$ has the unique characteristic of applying $one$ number to 
-an entire column of numbers. I used this fact to break the parallization into 
+an entire column of numbers. I used this fact to break the parallelization into 
 two parts. The first part takes the matrix and multiplies each column by the 
 associated element in the vector. That data is stored in a matrix. That stored 
-matrix is then passed to a secon CUDA function that performs an addition across 
+matrix is then passed to a second CUDA function that performs an addition across 
 the row. This addition step takes a mere $3us$ on a $1024x1024$ matrix.
 
 For the graduate portion of the assignment I simple pushed everything into a 1D 
@@ -127,7 +127,7 @@ This program can be compiled with the Makefile. Simply type: \texttt{make p2}
 
 \noindent To use the program type: \verb|.\prog2| or \verb|.\prog2 #| 
 
-\noindent where \verb|#| reprsents a number between 1 and 1024.
+\noindent where \verb|#| represents a number between 1 and 1024.
 
 \newpage
 \section{Description of the testing and verification process}{\label{sec:test}}
@@ -155,7 +155,7 @@ Figure \ref{fig:fast}. If we compare the function runtime of the single-threaded
 and multi-threaded functions we see they took $753780us$ and 
 $1968.9us + 3.04us = 1971.94us$ respectively. That is a speedup of about $382.5$ 
 times faster utilizing the full power of the CUDA cores. We can then calculate 
-the Karp-Flatt metrix using $p=1024$ as:
+the Karp-Flatt metric using $p=1024$ as:
 
 $$e = \frac{\frac{1}{\psi} - \frac{1}{p}}{1 - \frac{1}{p}}$$
 $$\frac{1}{\psi} = 0.002616068$$
@@ -194,7 +194,7 @@ performance can be seen in Figure \ref{fig:fastGrad}.
 If we compare the runtime of the single-threaded and multi-threaded functions we 
 see they took $209130us$ and $2.46us$ respectively. That is a speedup of about 
 $85,012$ times faster utilizing the full power of the CUDA cores. We can then 
-calculate the Karp-Flatt metrix using $p=1024$ as:
+calculate the Karp-Flatt metric using $p=1024$ as:
 
 $$e = \frac{\frac{1}{\psi} - \frac{1}{p}}{1 - \frac{1}{p}}$$
 $$\frac{1}{\psi} = 0.000011763$$
@@ -213,7 +213,7 @@ overhead is ignored, then it is possible to break this metric.
 
 \section{Description of what you have submitted}
 Included in the submission is the code needed to compile the program, a Makefile 
-to compile said code, and a detailed writeup of the assignment in pdf form.
+to compile said code, and a detailed write-up of the assignment in pdf form.
 
 
 \end{document}
