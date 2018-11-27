@@ -1,0 +1,86 @@
+\documentclass{article}
+\usepackage[left=2cm, right=2cm, top=2cm]{geometry}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{minted}                     % Code
+\usepackage{graphicx}                   % PNGs
+\usepackage{algorithm}
+\usepackage{algpseudocode}              % Algorithms
+\usepackage{amsmath}                    % Rightarrow
+\usepackage{hyperref}                   % Hyperlinks
+\hypersetup{
+    colorlinks,
+    linkcolor=black
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagenumbering{gobble}
+
+\title{\textbf{Final Project}}
+\author{MacMillan, Kyle}
+\date{December 11, 2018}
+
+
+\begin{document}
+
+\maketitle
+\addcontentsline{toc}{section}{Title}
+
+\newpage
+\pagenumbering{roman}   % Set TOC page numbering to lowercase roman numerals
+\tableofcontents
+\addcontentsline{toc}{section}{Table of Contents}
+
+\newpage
+\listoffigures
+\addcontentsline{toc}{section}{List of Figures}
+
+\newpage
+\pagenumbering{arabic}  % Set content page numbering to arabic numerals
+% Setup Hyperlinks for the rest of the document
+\hypersetup{
+    colorlinks,
+    citecolor=blue,
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\section{Description of the program}
+\setcounter{page}{1} % Set the page counter to 3
+This write-up is for the 
+\href{https://www.mcs.sdsmt.edu/ckarlsso/csc410/fall18/csc410_Final.pdf}{Final project} 
+and the repository for my work is \href{https://github.com/macattackftw/HighPerfComputing/tree/master/final}{here}.
+\\
+
+
+
+\section{Description of the algorithms and libraries used}
+asdf
+
+\section{Description of functions and program structure}
+asdf
+
+\section{How to compile and use the program}
+This program can be compiled with the Makefile. Simply type: 
+$$\texttt{make}$$
+$$or$$
+$$\texttt{make final}$$
+
+\noindent If you do not have access to the Makefile you can compile it with:
+$$\verb|mpiCC -o final final.cpp -std=c++11|$$
+
+\noindent To use the program type:
+$$\verb|mpirun .\final|$$ % TODO Update
+
+
+\newpage
+\section{Description of the testing and verification process}{\label{sec:test}}
+asdf
+
+\section{Description of what you have submitted}
+Included in the submission is the code needed to compile the program, a Makefile 
+to compile said code, and a detailed write-up of the assignment in pdf form.
+
+
+\end{document}

@@ -60,3 +60,9 @@ dkms.conf
 *.log
 *.toc
 _minted-*
+
+# Assignment specifics
+HW1/Shuffle-exchange.xcf
+HW1/problem2
+HW1/problem3
+final/final

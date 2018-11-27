@@ -5,11 +5,13 @@ all: final pdf
 
 clean:
 	-rm -f final
-	-rm -f *.toc
+	-rm -f *.loa
 	-rm -f *.lof
+	-rm -f *.log
+	-rm -f *.toc
 
-final: Prog2.cu
-	nvcc -o final final.cpp -std=c++11
+final: final.cpp
+	mpiCC -o final final.cpp -std=c++11
 
-pdf: final.tex
-	latexmk -pdf -pdflatex="pdflatex -interaction=nonstopmode" -shell-escape -use-make final.tex;latexmk -pdf -pdflatex="pdflatex -interaction=nonstopmode" -shell-escape  -use-make final.tex
+pdf: Final.tex
+	latexmk -pdf -pdflatex="pdflatex -interaction=nonstopmode" -shell-escape -use-make Final.tex;latexmk -pdf -pdflatex="pdflatex -interaction=nonstopmode" -shell-escape -use-make Final.tex
