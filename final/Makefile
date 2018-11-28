@@ -1,3 +1,10 @@
+INCL := -Iinclude
+SRC_FILES := $(wildcard src/*.cpp)
+CFLAGS := -std=c++11 -Wall
+EXECUTABLE = final
+EXEC := -o $(EXECUTABLE)
+PAPER := paper/
+TEX := Final.tex
 
 .PHONY: all clean
 
@@ -5,17 +12,9 @@ all: final pdf
 
 clean:
 	-rm -f final
-	-rm -f *.aux
-	-rm -f *.fdb_latexmk
-	-rm -f *.fls
-	-rm -f *.loa
-	-rm -f *.lof
-	-rm -f *.log
-	-rm -f *.out
-	-rm -f *.toc
 
-final: final.cpp
-	mpiCC -o final final.cpp -std=c++11
+final: $(SRC_FILES)
+	mpiCC $(EXEC) $(SRC_FILES) $(INCL) $(CFLAGS)
 
-pdf: Final.tex
-	latexmk -pdf -pdflatex="pdflatex -interaction=nonstopmode" -shell-escape -use-make Final.tex
+pdf: $(PAPER)$(TEX)
+	cd paper && latexmk -c -pdf -pdflatex="pdflatex -interaction=nonstopmode" -shell-escape $(TEX)

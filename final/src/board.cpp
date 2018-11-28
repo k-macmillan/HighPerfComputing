@@ -1,18 +1,19 @@
 #include "board.h"
+#pragma GCC diagnostic ignored "-Wsign-compare"   // Ignore sign compares
 
-Board::Board(const uint32_t &N, const uint32_t * const Queens, const uint32_t &Sum) : n(N),
-                                                                                      queens(Queens),
-                                                                                      row_sum(Sum){
+Board::Board(const uint32_t &N, const uint32_t *Queens, const uint32_t &Sum) : n(N),
+                                                                               queens(Queens),
+                                                                               row_sum(Sum){
 }
 
 
 Board::~Board(){
-    queens = NULL;
+
 }
 
 
 bool Board::validBoard(){
-    return validRow() && validDiagonal()
+    return validRow() && validDiagonal();
 }
 
 
@@ -32,7 +33,7 @@ bool Board::validDiagonal(){
      */
     for (uint32_t i = 0; i < n; ++i){
         for (uint32_t j = i; j < n; ++j){
-            diff = queens[j] - queens[i] + j - i;
+            int32_t diff = queens[j] - queens[i] + j - i;
             if (diff == 0 || diff == queens[i]){
                 return false;
             }
