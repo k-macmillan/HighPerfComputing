@@ -26,14 +26,18 @@
 #include <stdlib.h>     // srand, rand
 #include <mpi.h>        // mpi
 
+#include "completion.h" // Completeness function/array
+#include "board.h"
 
-int main (int argc, char** argv{
-    uint32_t id;    // ID
-    uint32_t p;     // Processor
+
+int main (int argc, char** argv){
+    // Can you do argument error checking with MPI?
+    uint32_t N = atoi(argv[1]);
+    int id;    // ID
+    int p;     // Processor
     MPI_Init(&argc, &argv );
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
     MPI_Comm_size(MPI_COMM_WORLD, &p);
-
 
     MPI_Finalize();
     return 0;
