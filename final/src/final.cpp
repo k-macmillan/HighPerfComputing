@@ -69,11 +69,10 @@ int main (int argc, char** argv){
 #endif
 
     bool con_out = true;
-
+    uint32_t count = 0;
     uint32_t n = 8;
     uint32_t queens[9] = {0};
 
-    uint32_t count = 0;
     for (uint32_t a = 0; a <= n; ++a){
         for (uint32_t b = 0; b <= n; ++b){
             for (uint32_t c = 0; c <= n; ++c){
