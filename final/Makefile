@@ -17,4 +17,4 @@ final: $(SRC_FILES)
 	mpiCC $(EXEC) $(SRC_FILES) $(INCL) $(CFLAGS)
 
 pdf: $(PAPER)$(TEX)
-	cd paper && latexmk -c -pdf -pdflatex="pdflatex -interaction=nonstopmode" -shell-escape $(TEX)
+	(cd paper && latexmk -pdf -pdflatex="pdflatex -interaction=nonstopmode" --shell-escape $(TEX) && latexmk -c)
