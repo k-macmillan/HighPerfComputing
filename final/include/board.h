@@ -2,22 +2,26 @@
 #define __BOARD_H__
 
 #include <stdint.h>     // better integers
+#include <iostream>     // cout
+#include <algorithm>    // std::min
+
 
 class Board
 {
 public:
-    Board(const uint32_t &N, const uint32_t *Queens, const uint32_t &Sum);
+    Board(const uint32_t &N, const uint32_t *Queens);
     ~Board();
     
     bool validBoard();
+    bool validRow();
 
 private:
-    bool validRow();
+    
     bool validDiagonal();
 
     const uint32_t n;
     const uint32_t *queens;
-    const uint32_t row_sum;
+    uint32_t *valid_row = nullptr;
 };
 
 #endif
