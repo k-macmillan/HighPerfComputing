@@ -14,7 +14,7 @@ clean:
 	-rm -f final
 
 final: $(SRC_FILES)
-	mpiCC $(EXEC) $(SRC_FILES) $(INCL) $(CFLAGS)
+	mpic++ $(EXEC) $(SRC_FILES) $(INCL) $(CFLAGS)
 
 pdf: $(PAPER)$(TEX)
 	(cd paper && latexmk -pdf -pdflatex="pdflatex -interaction=nonstopmode" --shell-escape $(TEX) && latexmk -c)

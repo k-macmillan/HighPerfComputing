@@ -39,25 +39,40 @@ bool Board::validRow(){
 
 bool Board::validDiagonal(){
     // Something is still off about this, need to track it down
+    // for (uint32_t i = 1; i < n; ++i){
+    //     // Search "up"
+    //     for (uint32_t j = i + 1; j < std::min(queens[i], n - i + 1) + i; ++j){
+    //         if (queens[i] - (j - i) == queens[j]){
+    //             return false;
+    //         }
+    //     }
+    //     // Search "down"
+    //     for (uint32_t j = i + 1; j < std::min(n - queens[i] + 1, n - i + 1) + i; ++j){
+    //         if (queens[i] + (j - i) == queens[j]){
+    //             return false;
+    //         }
+    //     }
+    // }
+    // return true;
+
+    // Something is still off about this, need to track it down
     for (uint32_t i = 1; i < n; ++i){
-        // int32_t row = queens[i] + 1;
         // Search "up"
         // std::cout << "i: " << i << std::endl;
-        // uint32_t nq = n - queens[i] + 1;
-        for (uint32_t j = i + 1; j < std::min(queens[i], n - i + 1) + i; ++j){
-            if (queens[i] - (j - i) == queens[j]){
-                // std::cout << "****UP\ti: " << i << "\tj: " << j << std::endl;
-                return false;
+        for (uint32_t j = i + 1; j <= n; ++j){
+            // std::cout << "\tj: " << j << std::endl;
+            uint32_t col_dif = j - i;
+            if (queens[i] - col_dif > 0){
+                if (queens[j] == queens[i] - col_dif || queens[j] == queens[i] + col_dif){
+                    return false;
+                }
             }
-            // std::cout << "UP\tj: " << j << std::endl;
-        }
-        // Search "down"
-        for (uint32_t j = i + 1; j < std::min(n - queens[i] + 1, n - i + 1) + i; ++j){
-            if (queens[i] + (j - i) == queens[j]){
-                // std::cout << "****DOWN\ti: " << i << "\tj: " << j << std::endl;
-                return false;
+
+            if (queens[i] + col_dif <= n){
+                if (queens[j] == queens[i] - col_dif || queens[j] == queens[i] + col_dif){
+                    return false;
+                }
             }
-            // std::cout << "DOWN\tj: " << j << std::endl;
         }
     }
     return true;

@@ -2,7 +2,7 @@
 #define __BOARD_H__
 
 #include <stdint.h>     // better integers
-#include <iostream>     // cout
+// #include <iostream>     // cout
 #include <algorithm>    // std::min
 
 
