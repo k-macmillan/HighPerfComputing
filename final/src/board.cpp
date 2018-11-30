@@ -33,13 +33,13 @@ bool Board::validRow(){
     //     return true;
     // }
     // return false;
-    return sum == n + 1 ? true : false;
+    return sum == n + 1? true : false;
 }
 
 
 bool Board::validDiagonal(){
     // Something is still off about this, need to track it down
-    for (uint32_t i = 0; i < n; ++i){
+    for (uint32_t i = 1; i < n; ++i){
         // int32_t row = queens[i] + 1;
         // Search "up"
         // std::cout << "i: " << i << std::endl;
