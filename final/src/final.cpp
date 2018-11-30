@@ -40,7 +40,7 @@ int main (int argc, char** argv){
     MPI_Comm_size(MPI_COMM_WORLD, &p);
 
     uint32_t n = 5;
-    uint32_t queens[6] = {4, 1, 5, 0, 2, 3 };
+    uint32_t queens[6] = {5, 3, 1, 4, 2, 0 };
     // Board test = Board(n, queens);
     // bool temp = test.validBoard();
     // if (temp){
