@@ -39,8 +39,8 @@ int main (int argc, char** argv){
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
     MPI_Comm_size(MPI_COMM_WORLD, &p);
 
-    uint32_t n = 5;
-    uint32_t queens[6] = {5, 3, 1, 4, 2, 0 };
+    uint32_t n = 4;
+    uint32_t queens[5] = {5, 3, 1, 4, 2 };
     // Board test = Board(n, queens);
     // bool temp = test.validBoard();
     // if (temp){
@@ -61,32 +61,35 @@ int main (int argc, char** argv){
             for (uint32_t c = 0; c <= n; ++c){
                 for (uint32_t d = 0; d <= n; ++d){
                     for (uint32_t e = 0; e <= n; ++e){
-                        for (uint32_t f = 0; f <= n; ++f){
-                            queens[0] = a;
-                            queens[1] = b;
-                            queens[2] = c;
-                            queens[3] = d;
-                            queens[4] = e;
-                            queens[5] = f;
-                            Board test = Board(n, queens);
-                            bool temp = test.validBoard();
-                            if (temp){
-                                // std::cout << "TRUE" << std::endl;
-                                std::cout << "{";
-                                for (uint32_t i = 0; i <= n; ++i){
-                                    std::cout << queens[i] << ", ";
+                        // for (uint32_t f = 0; f <= n; ++f){
+                            // for (uint32_t g = 0; g <= n; ++g){
+                                queens[0] = a;
+                                queens[1] = b;
+                                queens[2] = c;
+                                queens[3] = d;
+                                queens[4] = e;
+                                // queens[5] = f;
+                                // queens[6] = g;
+                                Board test = Board(n, queens);
+                                bool temp = test.validBoard();
+                                if (temp){
+                                    // std::cout << "TRUE" << std::endl;
+                                    std::cout << "{";
+                                    for (uint32_t i = 0; i <= n; ++i){
+                                        std::cout << queens[i] << ", ";
+                                    }
+                                    std::cout << "}" << std::endl;
+                                    ++count;
+                                    
                                 }
-                                std::cout << "}" << std::endl;
-                                ++count;
-                                
-                            }
-                            if (test.validRow()){
-                                    ++row_count;
-                            }
-                            // else{
-                            //     std::cout << "FALSE" << std::endl;
+                                if (test.validRow()){
+                                        ++row_count;
+                                }
+                                // else{
+                                //     std::cout << "FALSE" << std::endl;
+                                // }
                             // }
-                        }
+                        // }
                     }
                 }
             }
