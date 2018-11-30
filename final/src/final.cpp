@@ -41,18 +41,18 @@ int main (int argc, char** argv){
 
     uint32_t n = 5;
     uint32_t queens[6] = {4, 1, 5, 0, 2, 3 };
-    Board test = Board(n, queens);
-    bool temp = test.validBoard();
-    if (temp){
-        // std::cout << "TRUE" << std::endl;
-        std::cout << "{";
-        for (uint32_t i = 0; i <= n; ++i){
-            std::cout << queens[i] << ", ";
-        }
-        std::cout << "}" << std::endl;
+    // Board test = Board(n, queens);
+    // bool temp = test.validBoard();
+    // if (temp){
+    //     // std::cout << "TRUE" << std::endl;
+    //     std::cout << "{";
+    //     for (uint32_t i = 0; i <= n; ++i){
+    //         std::cout << queens[i] << ", ";
+    //     }
+    //     std::cout << "}" << std::endl;
         
-    }
-    return 0;
+    // }
+    // return 0;
     // uint32_t sum = 15;
     uint32_t row_count = 0;
     uint32_t count = 0;

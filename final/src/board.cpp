@@ -42,22 +42,22 @@ bool Board::validDiagonal(){
     for (uint32_t i = 0; i < n; ++i){
         // int32_t row = queens[i] + 1;
         // Search "up"
-        std::cout << "i: " << i << std::endl;
+        // std::cout << "i: " << i << std::endl;
         // uint32_t nq = n - queens[i] + 1;
         for (uint32_t j = i + 1; j < std::min(queens[i], n - i + 1) + i; ++j){
             if (queens[i] - (j - i) == queens[j]){
-                std::cout << "****UP\ti: " << i << "\tj: " << j << std::endl;
+                // std::cout << "****UP\ti: " << i << "\tj: " << j << std::endl;
                 return false;
             }
-            std::cout << "UP\tj: " << j << std::endl;
+            // std::cout << "UP\tj: " << j << std::endl;
         }
         // Search "down"
-        for (uint32_t j = i + 1; j < n - queens[i]; ++j){
+        for (uint32_t j = i + 1; j < std::min(n - queens[i] + 1, n - i + 1) + i; ++j){
             if (queens[i] + (j - i) == queens[j]){
-                std::cout << "****DOWN\ti: " << i << "\tj: " << j << std::endl;
+                // std::cout << "****DOWN\ti: " << i << "\tj: " << j << std::endl;
                 return false;
             }
-            std::cout << "DOWN\tj: " << j << std::endl;
+            // std::cout << "DOWN\tj: " << j << std::endl;
         }
     }
     return true;
