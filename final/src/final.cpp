@@ -26,9 +26,33 @@
 #include <stdlib.h>     // srand, rand
 // #include <mpi.h>        // mpi
 
-// #include "completion.h" // Completeness function/array
+#include "completion.h" // Completeness function/array
 #include "board.h"
 
+#ifdef DEBUG
+void singleTest(){
+    uint32_t n = 5;
+    uint32_t queens[6] = {0, 1, 2, 3, 4, 5};
+
+    Board test = Board(n, queens);
+    bool temp = test.validBoard();
+    if (temp){
+        // std::cout << "TRUE" << std::endl;
+        std::cout << "\n{";
+        for (uint32_t i = 0; i < n; ++i){
+            std::cout << queens[i] << ", ";
+        }
+        std::cout << queens[n] << "}\n" << std::endl;        
+    }
+    else{
+        std::cout << "\n{";
+        for (uint32_t i = 1; i < n; ++i){
+            std::cout << queens[i] << ", ";
+        }
+        std::cout << queens[n] << "} is NOT valid.\n" << std::endl; 
+    }
+}
+#endif
 
 int main (int argc, char** argv){
     // Can you do argument error checking with MPI?
@@ -39,21 +63,15 @@ int main (int argc, char** argv){
     // MPI_Comm_rank(MPI_COMM_WORLD, &id);
     // MPI_Comm_size(MPI_COMM_WORLD, &p);
 
-    uint32_t n = 9;
-    uint32_t queens[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    // Board test = Board(n, queens);
-    // bool temp = test.validBoard();
-    // if (temp){
-    //     // std::cout << "TRUE" << std::endl;
-    //     std::cout << "{";
-    //     for (uint32_t i = 0; i < n; ++i){
-    //         std::cout << queens[i] << ", ";
-    //     }
-    //     std::cout << queens[n] << "}" << std::endl;
-        
-    // }
-    // return 0;
-    // uint32_t sum = 15;
+#ifdef DEBUG
+    singleTest();
+    return 0;
+#endif
+
+    bool con_out = true;
+
+    uint32_t n = 8;
+    uint32_t queens[9] = {0};
 
     uint32_t count = 0;
     for (uint32_t a = 0; a <= n; ++a){
@@ -64,7 +82,8 @@ int main (int argc, char** argv){
                         for (uint32_t f = 0; f <= n; ++f){
                             for (uint32_t g = 0; g <= n; ++g){
                                 for (uint32_t h = 0; h <= n; ++h){
-                                    for (uint32_t i = 0; i <= n; ++i){
+                                    // Takes about 1 min 43 sec on my laptop for 9x9
+                                    // for (uint32_t i = 0; i <= n; ++i){
                                         queens[1] = a;
                                         queens[2] = b;
                                         queens[3] = c;
@@ -73,19 +92,20 @@ int main (int argc, char** argv){
                                         queens[6] = f;
                                         queens[7] = g;
                                         queens[8] = h;
-                                        queens[9] = i;
+                                        // queens[9] = i;
                                         Board test = Board(n, queens);
                                         if (test.validBoard()){
-                                            // std::cout << "TRUE" << std::endl;
-                                            // std::cout << "{";
-                                            // for (uint32_t i = 0; i < n; ++i){
-                                            //     std::cout << queens[i] << ", ";
-                                            // }
-                                            // std::cout << queens[n] << "}" << std::endl;
                                             ++count;
+                                            if (con_out){
+                                                std::cout << "{";
+                                                for (uint32_t i = 0; i < n; ++i){
+                                                    std::cout << queens[i] << ", ";
+                                                }
+                                                std::cout << queens[n] << "}" << std::endl;
+                                            }
                                             
                                         }
-                                    }
+                                    // }
                                 }
                             }
                         }
@@ -101,3 +121,4 @@ int main (int argc, char** argv){
     // MPI_Finalize();
     return 0;
 }
+
