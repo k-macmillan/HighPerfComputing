@@ -20,14 +20,15 @@
  *
  */        
 
-
 #include <iostream>     // cout
 #include <stdint.h>     // better integers
 #include <stdlib.h>     // srand, rand
-// #include <mpi.h>        // mpi
+#include <mpi.h>        // mpi
+#include <string>       // Strings
 
 #include "completion.h" // Completeness function/array
 #include "board.h"
+#include "nthpermutation.h"
 
 #ifdef DEBUG
 void singleTest(){
@@ -56,68 +57,58 @@ void singleTest(){
 
 int main (int argc, char** argv){
     // Can you do argument error checking with MPI?
-    // uint32_t N = atoi(argv[1]);
-    // int id;    // ID
-    // int p;     // Processor
-    // MPI_Init(&argc, &argv );
-    // MPI_Comm_rank(MPI_COMM_WORLD, &id);
-    // MPI_Comm_size(MPI_COMM_WORLD, &p);
+    bool user_defined = false;
+    uint8_t n;
+    int id;             // ID
+    int p;              // Processor count
+    MPI_Init(&argc, &argv );
+    MPI_Comm_rank(MPI_COMM_WORLD, &id);
+    MPI_Comm_size(MPI_COMM_WORLD, &p);
+
+    try{
+        n = stoi(std::string(argv[1]));
+        user_defined = true;
+    }catch(std::exception const & e){
+        if (id == 0)
+            std::cout << "An error occured: " << e.what() << std::endl;
+        MPI_Finalize();
+        return 0;
+    }
+
+
+
+    if (n > 20){
+        if (id == 0)
+            std::cout << "\nYour n: " << argv[1] << ", is too large. Please pick a number under 21\n" << std::endl;
+        MPI_Finalize();
+        return 0;
+    }
 
 #ifdef DEBUG
     singleTest();
     return 0;
 #endif
 
-    bool con_out = true;
-    uint32_t count = 0;
-    uint32_t n = 8;
-    uint32_t queens[9] = {0};
-
-    for (uint32_t a = 0; a <= n; ++a){
-        for (uint32_t b = 0; b <= n; ++b){
-            for (uint32_t c = 0; c <= n; ++c){
-                for (uint32_t d = 0; d <= n; ++d){
-                    for (uint32_t e = 0; e <= n; ++e){
-                        for (uint32_t f = 0; f <= n; ++f){
-                            for (uint32_t g = 0; g <= n; ++g){
-                                for (uint32_t h = 0; h <= n; ++h){
-                                    // Takes about 1 min 43 sec on my laptop for 9x9
-                                    // for (uint32_t i = 0; i <= n; ++i){
-                                        queens[1] = a;
-                                        queens[2] = b;
-                                        queens[3] = c;
-                                        queens[4] = d;
-                                        queens[5] = e;
-                                        queens[6] = f;
-                                        queens[7] = g;
-                                        queens[8] = h;
-                                        // queens[9] = i;
-                                        Board test = Board(n, queens);
-                                        if (test.validBoard()){
-                                            ++count;
-                                            if (con_out){
-                                                std::cout << "{";
-                                                for (uint32_t i = 0; i < n; ++i){
-                                                    std::cout << queens[i] << ", ";
-                                                }
-                                                std::cout << queens[n] << "}" << std::endl;
-                                            }
-                                            
-                                        }
-                                    // }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+    if (user_defined){
+        // Run "n" queens on the N passed in
+        for(uint8_t i = 0; i < n; ++i){
+            // Run each "n" queens
+            continue;
         }
     }
-    
-    std::cout << "\nN: " << n << "x" << n << std::endl;
-    std::cout << "Count: " << count << std::endl;
+    else{
+        if (id == 0){
+            for(uint8_t i = 0; i < 21; ++i){
+                // Run each "n" queens
+                continue;
+            }
+        }
+        else{
 
-    // MPI_Finalize();
+        }
+    }
+
+    MPI_Finalize();
     return 0;
 }
 
