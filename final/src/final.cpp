@@ -63,16 +63,19 @@ int main (int argc, char** argv){
     uint8_t n;                  // User defined n
     int id;                     // ID
     int p;                      // Processor count
+    std::queue<uint8_t> q;      // Queue for permutations
+    bool early_exit = false;    // Early exit for grads
+    bool *ee_ptr = &early_exit;
     MPI_Init(&argc, &argv );
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
     MPI_Comm_size(MPI_COMM_WORLD, &p);
 
     try{
         n = stoi(std::string(argv[1]));
-        if (n > 20){
+        if (n > 19){
             if (id == 0)
                 std::cout << "\nYour n: " << argv[1] << ", is too large. " << 
-                "Please pick a number under 21. Aborting...\n" << std::endl;
+                "Please pick a number under 19. Aborting...\n" << std::endl;
             MPI_Finalize();
             return 0;
         }
@@ -103,9 +106,18 @@ int main (int argc, char** argv){
 
     if (user_defined){
         // Run "n" queens on the N passed in
-        for(uint8_t i = 0; i < n; ++i){
-            // Run each "n" queens
-            continue;
+        if (id == 0){
+            std::cout << "Running " << int(n) << "-queens..." << std::endl;
+            uint8_t *queens = (uint8_t*)malloc(n * sizeof(uint8_t));
+            // uint8_t queen[6] = {1, 3, 5, 0, 2, 4};
+            for (uint8_t i = 0; i < n; ++i){
+                queens[i] = i;
+            }
+            uint32_t permutations = Factorial(n);
+            Board b(permutations, n, queens, ee_ptr);
+            int count = b.validBoardCount();
+            std::cout << "Valid queen positions: " << count << std::endl;
+            free(queens);
         }
     }
     else{

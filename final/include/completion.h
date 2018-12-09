@@ -27,4 +27,8 @@ inline bool correctCount(const uint32_t &N, const uint64_t &count){
     return count == complete27[N];
 }
 
+inline uint32_t Factorial(uint32_t x) {
+  return (x == 1 ? x : x * Factorial(x - 1));
+}
+
 #endif

@@ -1,68 +1,61 @@
 #include "board.h"
 #pragma GCC diagnostic ignored "-Wsign-compare"   // Ignore sign compares
 
-Board::Board(const uint32_t &N, const uint32_t *Queens) : n(N),
-                                                          queens(Queens){
-    valid_row = new uint32_t[N + 1]();
+Board::Board(const uint32_t &Permutations, const uint8_t &N, uint8_t *Queens, bool *Early_Exit) : 
+                permutations(Permutations), n(N), queens(Queens), early_exit(Early_Exit){
 }
 
 
 Board::~Board(){
-    delete [] valid_row;
 }
 
 
-bool Board::validBoard(){
-    return validRow() && validDiagonal();
-}
+int Board::validBoardCount(){
+    int count = 0;
+    while (!(*early_exit) && permutations-- > 0){
+        if (validDiagonal()){
+            ++count;
+        }
 
-
-bool Board::validRow(){
-    uint32_t sum = 0;
-    for (uint32_t i = 0; i <= n; ++i){
-        valid_row[queens[i]] = 1;
+        std::next_permutation(queens, queens + n);
     }
-    for (uint32_t i = 0; i <= n; ++i){
-        sum += valid_row[i];
-    }
-    return sum == n + 1? true : false;
+    // validDiagonal();
+    return count;
 }
 
 
 bool Board::validDiagonal(){
-    // Smart checking
-    // for (uint32_t i = 1; i < n; ++i){
-    //     // Search "up"
-    //     for (uint32_t j = i + 1; j < std::min(queens[i], n - i + 1) + i; ++j){
-    //         if (queens[i] - (j - i) == queens[j]){
-    //             return false;
-    //         }
-    //     }
-    //     // Search "down"
-    //     for (uint32_t j = i + 1; j < std::min(n - queens[i] + 1, n - i + 1) + i; ++j){
-    //         if (queens[i] + (j - i) == queens[j]){
-    //             return false;
-    //         }
-    //     }
-    // }
-    // return true;
+    // Attempt 3
+    uint8_t max_col = 0;
+    for (uint8_t i = 0; i < n; ++i){
+        uint8_t col_dif = 1;
+        // std::cout << "i: " << int(i);
+        // This is only efficient at "high" n values
+        max_col = std::min(std::max(queens[i], uint8_t(n - queens[i])), uint8_t(n - i)) + i;
+        // std::cout << "\nMax columns: " << int(max_col) << std::endl;
+        for (uint8_t j = i + 1; j < max_col; ++j){
+            // std::cout << "\tj: " << int(j) << std::endl;
+            if (queens[i] + col_dif == queens[j] || queens[i] - col_dif == queens[j]){
+                // std::cout << "col diff: " << int(col_dif) << std::endl;
+                // std::cout << "q[i]: " << int(queens[i]) << std::endl;
+                // std::cout << "q[j]: " << int(queens[j]) << std::endl;
+                // std::cout << "A: " << int(queens[i] + col_dif) << std::endl;
+                // std::cout << "B: " << int(queens[i] - col_dif) << std::endl;
 
-    // Brute force
-    for (uint32_t i = 1; i < n; ++i){
-        for (uint32_t j = i + 1; j <= n; ++j){
-            uint32_t col_dif = j - i;
-            if (queens[i] - col_dif > 0){
-                if (queens[j] == queens[i] - col_dif || queens[j] == queens[i] + col_dif){
-                    return false;
-                }
+                // std::cout << "FAILURE AT: {" << int(i) << ", " << int(j) << "}\n" << std::endl;
+                // std::cout << int(queens[n-1]) << "} FAILED" << std::endl;
+                return false;
             }
-
-            if (queens[i] + col_dif <= n){
-                if (queens[j] == queens[i] - col_dif || queens[j] == queens[i] + col_dif){
-                    return false;
-                }
-            }
+            // https://web.archive.org/web/20120509225531/http://www2.research.att.com/~bs/JSF-AV-rules.pdf
+            // AV Rule 199
+            ++col_dif;
         }
+        // std::cout << std::endl;
     }
+    std::cout << "Arrangement: {";
+    for (uint8_t k = 0; k < n - 1; ++k){
+        std::cout << int(queens[k]) << ", ";
+    }
+    std::cout << int(queens[n-1]) << "} PASSED" << std::endl;
     return true;
 }
