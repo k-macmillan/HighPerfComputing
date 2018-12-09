@@ -2,7 +2,7 @@
 #pragma GCC diagnostic ignored "-Wsign-compare"   // Ignore sign compares
 
 Board::Board(const uint32_t &Permutations, const uint8_t &N, const bool &PrintOut, uint8_t *Queens, bool *Early_Exit) : 
-                permutations(Permutations), n(N), print_out(PrintOut), queens(Queens), early_exit(Early_Exit){
+                queens(Queens), permutations(Permutations), n(N), print_out(PrintOut), early_exit(Early_Exit){
 }
 
 

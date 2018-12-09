@@ -107,6 +107,18 @@ int main (int argc, char** argv){
     return 0;
 #endif
 
+// Example MPI code:
+// https://www.mpi-forum.org/docs/mpi-1.1/mpi-11-html/node72.html
+// MPI_Comm comm; 
+//     int gsize,*sendbuf; 
+//     int root, rbuf[100]; 
+//     ... 
+//     MPI_Comm_size( comm, &gsize); 
+//     sendbuf = (int *)malloc(gsize*100*sizeof(int)); 
+//     ... 
+//     MPI_Scatter( sendbuf, 100, MPI::UNSIGNED_CHAR, rbuf, 100, MPI::UNSIGNED_CHAR, root, comm); 
+
+
     if (user_defined){
         // Run "n" queens on the N passed in
         if (id == 0){
@@ -116,7 +128,9 @@ int main (int argc, char** argv){
                 queens[i] = i;
             }
             uint32_t permutations = Factorial(n);
-            Board b(permutations, n, print_out, queens, ee_ptr);
+            // MPI_Scatter( sendbuf, 100, MPI::UNSIGNED_CHAR, rbuf, 100, MPI::UNSIGNED_CHAR, root, comm); 
+            Board b(permutations, n, print_out, nullptr, ee_ptr);
+            b.queens = queens;
             count = b.validBoardCount();
             std::cout << "Valid queen positions: " << count << std::endl;
             free(queens);

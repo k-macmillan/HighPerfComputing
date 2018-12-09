@@ -13,11 +13,12 @@ public:
     
     int validBoardCount();
 
+    uint8_t *queens;
+
 private:
     uint32_t permutations;
     const uint8_t &n;
     const bool print_out;
-    uint8_t *queens;
     bool *early_exit;
     
     bool validDiagonal();
