@@ -66,6 +66,7 @@ int main (int argc, char** argv){
     std::queue<uint8_t> q;      // Queue for permutations
     bool early_exit = false;    // Early exit for grads
     bool *ee_ptr = &early_exit;
+    bool print_out = false;
     MPI_Init(&argc, &argv );
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
     MPI_Comm_size(MPI_COMM_WORLD, &p);
@@ -113,7 +114,7 @@ int main (int argc, char** argv){
                 queens[i] = i;
             }
             uint32_t permutations = Factorial(n);
-            Board b(permutations, n, queens, ee_ptr);
+            Board b(permutations, n, print_out, queens, ee_ptr);
             int count = b.validBoardCount();
             std::cout << "Valid queen positions: " << count << std::endl;
             free(queens);
