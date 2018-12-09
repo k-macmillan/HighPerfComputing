@@ -109,7 +109,6 @@ int main (int argc, char** argv){
         if (id == 0){
             std::cout << "Running " << int(n) << "-queens..." << std::endl;
             uint8_t *queens = (uint8_t*)malloc(n * sizeof(uint8_t));
-            // uint8_t queen[6] = {1, 3, 5, 0, 2, 4};
             for (uint8_t i = 0; i < n; ++i){
                 queens[i] = i;
             }
