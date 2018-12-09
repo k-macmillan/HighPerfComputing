@@ -67,6 +67,8 @@ int main (int argc, char** argv){
     bool early_exit = false;    // Early exit for grads
     bool *ee_ptr = &early_exit;
     bool print_out = false;
+    uint32_t count = 0;
+
     MPI_Init(&argc, &argv );
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
     MPI_Comm_size(MPI_COMM_WORLD, &p);
@@ -115,16 +117,27 @@ int main (int argc, char** argv){
             }
             uint32_t permutations = Factorial(n);
             Board b(permutations, n, print_out, queens, ee_ptr);
-            int count = b.validBoardCount();
+            count = b.validBoardCount();
             std::cout << "Valid queen positions: " << count << std::endl;
             free(queens);
         }
     }
     else{
         if (id == 0){
-            for(uint8_t i = 0; i < 21; ++i){
+            std::cout << "Running " << 0 << "-queens..." << std::endl;
+            std::cout << "Valid queen positions: " << count << std::endl;
+            for(uint8_t i = 1; i < 9; ++i){
                 // Run each "n" queens
-                continue;
+                std::cout << "Running " << int(i) << "-queens..." << std::endl;
+                uint8_t *queens = (uint8_t*)malloc(i * sizeof(uint8_t));
+                for (uint8_t j = 0; j < i; ++j){
+                    queens[j] = j;
+                }
+                uint32_t permutations = Factorial(i);
+                Board b(permutations, i, print_out, queens, ee_ptr);
+                count = b.validBoardCount();
+                std::cout << "Valid queen positions: " << count << std::endl;
+                free(queens);
             }
         }
         else{
