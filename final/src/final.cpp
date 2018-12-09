@@ -127,7 +127,7 @@ int main (int argc, char** argv){
             for (uint8_t i = 0; i < n; ++i){
                 queens[i] = i;
             }
-            uint32_t permutations = Factorial(n);
+            uint32_t permutations = factorials[n];
             // MPI_Scatter( sendbuf, 100, MPI::UNSIGNED_CHAR, rbuf, 100, MPI::UNSIGNED_CHAR, root, comm); 
             Board b(permutations, n, print_out, nullptr, ee_ptr);
             b.queens = queens;
@@ -147,7 +147,7 @@ int main (int argc, char** argv){
                 for (uint8_t j = 0; j < i; ++j){
                     queens[j] = j;
                 }
-                uint32_t permutations = Factorial(i);
+                uint32_t permutations = factorials[i];
                 Board b(permutations, i, print_out, queens, ee_ptr);
                 count = b.validBoardCount();
                 std::cout << "Valid queen positions: " << count << std::endl;

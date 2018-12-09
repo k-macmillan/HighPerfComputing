@@ -2,6 +2,7 @@
 #define __NTHPERMUTATION_H_
 
 #include <stdint.h>     // better integers
+#include "completion.h" // factorials[]
 
 // https://stackoverflow.com/a/7919887  ith permutation
 
@@ -9,19 +10,12 @@
 void nthPermutation(const uint8_t &size, uint32_t n, uint8_t *perm )
 {
    uint8_t j, k = 0;
-   uint32_t *fact = (uint32_t *)calloc(size, sizeof(uint32_t));
-   // uint32_t *perm = (uint32_t *)calloc(size, sizeof(uint32_t));
-
-   // compute factorial numbers
-   fact[k] = 1;
-   while (++k < size)
-      fact[k] = fact[k - 1] * k;
 
    // compute factorial code
    for (k = 0; k < size; ++k)
    {
-      perm[k] = n / fact[size - 1 - k];
-      n = n % fact[size - 1 - k];
+      perm[k] = n / factorials[size - 1 - k];
+      n = n % factorials[size - 1 - k];
    }
 
    // readjust values to obtain the permutation
@@ -30,8 +24,6 @@ void nthPermutation(const uint8_t &size, uint32_t n, uint8_t *perm )
       for (j = k - 1; j >= 0; --j)
          if (perm[j] <= perm[k])
             perm[k]++;
-
-   free(fact);
 }
 
 
