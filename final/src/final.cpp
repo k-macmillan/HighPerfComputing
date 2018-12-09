@@ -25,6 +25,7 @@
 #include <stdlib.h>     // srand, rand
 #include <mpi.h>        // mpi
 #include <string>       // Strings
+#include <queue>        // Queue
 
 #include "completion.h" // Completeness function/array
 #include "board.h"
@@ -55,34 +56,42 @@ void singleTest(){
 }
 #endif
 
+
 int main (int argc, char** argv){
     // Can you do argument error checking with MPI?
-    bool user_defined = false;
-    uint8_t n;
-    int id;             // ID
-    int p;              // Processor count
+    bool user_defined = false;  // Flag for user-defined n
+    uint8_t n;                  // User defined n
+    int id;                     // ID
+    int p;                      // Processor count
     MPI_Init(&argc, &argv );
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
     MPI_Comm_size(MPI_COMM_WORLD, &p);
 
     try{
         n = stoi(std::string(argv[1]));
-        user_defined = true;
+        if (n > 20){
+            if (id == 0)
+                std::cout << "\nYour n: " << argv[1] << ", is too large. Please pick a number under 21\n" << std::endl;
+            MPI_Finalize();
+            return 0;
+        }
+        else{
+            user_defined = true;
+        }
+
     }catch(std::exception const & e){
-        if (id == 0)
-            std::cout << "An error occured: " << e.what() << std::endl;
-        MPI_Finalize();
-        return 0;
+        if (id == 0){
+            if (std::string(e.what()) != "basic_string::_M_construct null not valid"){
+                std::cout << "An error occured: " << e.what() << std::endl;
+                MPI_Finalize();
+                return 0;
+            }
+        }
     }
 
 
 
-    if (n > 20){
-        if (id == 0)
-            std::cout << "\nYour n: " << argv[1] << ", is too large. Please pick a number under 21\n" << std::endl;
-        MPI_Finalize();
-        return 0;
-    }
+    
 
 #ifdef DEBUG
     singleTest();
