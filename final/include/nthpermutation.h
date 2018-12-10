@@ -9,7 +9,7 @@
 
 void nthPermutation(const uint8_t &size, uint32_t n, uint8_t *perm )
 {
-   uint8_t j, k = 0;
+   int8_t j, k = 0;
 
    // compute factorial code
    for (k = 0; k < size; ++k)
