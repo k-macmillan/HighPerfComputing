@@ -74,6 +74,7 @@ int main (int argc, char** argv){
     MPI_Init(&argc, &argv );
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
     MPI_Comm_size(MPI_COMM_WORLD, &p);
+    p -= 1;
 
     try{
         n = stoi(std::string(argv[1]));
@@ -132,7 +133,7 @@ int main (int argc, char** argv){
             uint64_t rank_perms = factorials[n] / p;
             if (id != 1){
                 // Skip this for id == 1
-                uint64_t id_rank_perms = rank_perms * id + factorials[n] % p;
+                uint64_t id_rank_perms = rank_perms * (id - 1) + factorials[n] % p;
                 nthPermutation(n, id_rank_perms, queens);
             }
             else{
