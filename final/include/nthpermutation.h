@@ -4,10 +4,10 @@
 #include <stdint.h>     // better integers
 #include "completion.h" // factorials[]
 
+
 // https://stackoverflow.com/a/7919887  ith permutation
 
-
-void nthPermutation(const uint8_t &size, uint32_t n, uint8_t *perm )
+void nthPermutation(const uint8_t &size, uint64_t n, uint8_t *perm )
 {
    int8_t j, k = 0;
 
@@ -23,7 +23,7 @@ void nthPermutation(const uint8_t &size, uint32_t n, uint8_t *perm )
    for (k = size - 1; k > 0; --k)
       for (j = k - 1; j >= 0; --j)
          if (perm[j] <= perm[k])
-            perm[k]++;
+            ++perm[k];
 }
 
 

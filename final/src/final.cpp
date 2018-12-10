@@ -30,6 +30,7 @@
 #include "completion.h" // Completeness function/array
 #include "board.h"
 #include "nthpermutation.h"
+#include "nthpermutation.h"
 
 #ifdef DEBUG
 void singleTest(){
@@ -68,6 +69,7 @@ int main (int argc, char** argv){
     bool *ee_ptr = &early_exit;
     bool print_out = false;
     uint32_t count = 0;
+    uint32_t global_count = 0;
 
     MPI_Init(&argc, &argv );
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
@@ -121,43 +123,100 @@ int main (int argc, char** argv){
 
     if (user_defined){
         // Run "n" queens on the N passed in
-        if (id == 0){
-            std::cout << "Running " << int(n) << "-queens..." << std::endl;
+        if (id != 0){
+            // std::cout << "myrank: " << id << std::endl;
             uint8_t *queens = (uint8_t*)malloc(n * sizeof(uint8_t));
             for (uint8_t i = 0; i < n; ++i){
                 queens[i] = i;
             }
-            uint32_t permutations = factorials[n];
-            // MPI_Scatter( sendbuf, 100, MPI::UNSIGNED_CHAR, rbuf, 100, MPI::UNSIGNED_CHAR, root, comm); 
-            Board b(permutations, n, print_out, nullptr, ee_ptr);
-            b.queens = queens;
+            uint64_t rank_perms = factorials[n] / p;
+            if (id != 1){
+                // Skip this for id == 1
+                uint64_t id_rank_perms = rank_perms * id + factorials[n] % p;
+                nthPermutation(n, id_rank_perms, queens);
+            }
+            else{
+                rank_perms = (factorials[n] / p) + (factorials[n] % p);
+            }
+            // std::cout << "Permutations: " << rank_perms << std::endl;
+            
+
+            Board b(rank_perms, n, print_out, queens, ee_ptr);
             count = b.validBoardCount();
-            std::cout << "Valid queen positions: " << count << std::endl;
+            // count = rank_perms;
+            // std::cout << "rank[" << id << "]: " << count << std::endl;
             free(queens);
         }
     }
-    else{
-        if (id == 0){
-            std::cout << "Running " << 0 << "-queens..." << std::endl;
-            std::cout << "Valid queen positions: " << count << std::endl;
-            for(uint8_t i = 1; i < 9; ++i){
-                // Run each "n" queens
-                std::cout << "Running " << int(i) << "-queens..." << std::endl;
-                uint8_t *queens = (uint8_t*)malloc(i * sizeof(uint8_t));
-                for (uint8_t j = 0; j < i; ++j){
-                    queens[j] = j;
-                }
-                uint32_t permutations = factorials[i];
-                Board b(permutations, i, print_out, queens, ee_ptr);
-                count = b.validBoardCount();
-                std::cout << "Valid queen positions: " << count << std::endl;
-                free(queens);
-            }
-        }
-        else{
 
-        }
+    MPI_Reduce(&count, &global_count, 1, MPI::UNSIGNED_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
+    if (id == 0){
+        std::cout << "Running " << int(n) << "-queens..." << std::endl;
+        std::cout << "Valid queen positions: " << global_count << std::endl;
     }
+
+    // else{
+    //     if (id == 0){
+    //         std::cout << "Running " << 0 << "-queens..." << std::endl;
+    //         std::cout << "Valid queen positions: " << count << std::endl;
+    //     }
+    //     for(uint8_t i = 8; i < 9; ++i){
+    //         // Run each "n" queens
+    //         if (p < 8 || factorials[i] < p){
+    //             // Run sequentially
+    //             std::cout << "Running id: " << id << std::endl;
+    //             if (id == 0){
+    //                 std::cout << "Running " << int(i) << "-queens..." << std::endl;
+    //                 uint8_t *queens = (uint8_t*)malloc(i * sizeof(uint8_t));
+    //                 for (uint8_t j = 0; j < i; ++j){
+    //                     queens[j] = j;
+    //                 }
+    //                 Board b(factorials[i], i, print_out, queens, ee_ptr);
+    //                 count = b.validBoardCount();
+    //                 std::cout << "Valid queen positions: " << count << std::endl;
+    //                 free(queens);
+    //             }
+    //         }
+    //         else{
+    //             std::cout << "Switching to MPI..." << std::endl;
+    //             uint32_t global_count = 0;
+    //             if (id != 0){
+    //                 // uint32_t permutations = factorials[i];
+    //                 uint32_t rank_perms = factorials[i] / p;
+    //                 uint32_t leftover = factorials[i] % p;
+    //                 std::cout << "Running " << int(i) << "-queens..." << std::endl;
+    //                 uint8_t *queens = (uint8_t*)malloc(i * sizeof(uint8_t));
+    //                 // MUST initialize queens array
+    //                 for (uint8_t j = 0; j < i; ++j){
+    //                     queens[j] = j;
+    //                 }
+    //                 // Fill queens with correct permutation to start at based on rank
+    //                 if (id == 1){
+    //                     rank_perms += leftover;
+    //                     nthPermutation(i, rank_perms, queens);
+    //                 }
+    //                 else{
+    //                     nthPermutation(i, rank_perms * id, queens);
+    //                 }
+
+    //                     std::cout << "permutations: " << rank_perms << std::endl;
+    //                 // if (rank_perms != 0){
+    //                     Board b(rank_perms, i, print_out, queens, ee_ptr);
+    //                     b.printOut();
+    //                     count = b.validBoardCount();
+    //                 // }
+    //                 std::cout << "Valid queen positions[" << id << "]: " << count << std::endl;
+    //                 free(queens);
+    //             }
+    //             else{
+    //                 // MPI_Barrier(MPI_COMM_WORLD);
+    //                 // MPI_Reduce(&count, &global_count, 1, MPI::UNSIGNED_LONG, MPI_SUM, 0 , MPI_COMM_WORLD);
+    //                 // std::cout << "Valid queen positions: " << global_count << std::endl;
+    //             }
+    //         }
+    //         MPI_Barrier(MPI_COMM_WORLD);
+    //     }
+    // }
 
     MPI_Finalize();
     return 0;

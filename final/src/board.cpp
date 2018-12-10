@@ -1,8 +1,8 @@
 #include "board.h"
 #pragma GCC diagnostic ignored "-Wsign-compare"   // Ignore sign compares
 
-Board::Board(const uint32_t &Permutations, const uint8_t &N, const bool &PrintOut, uint8_t *Queens, bool *Early_Exit) : 
-                queens(Queens), permutations(Permutations), n(N), print_out(PrintOut), early_exit(Early_Exit){
+Board::Board(const uint64_t &Permutations, const uint8_t &N, const bool &PrintOut, uint8_t *Queens, bool *Early_Exit) : 
+                permutations(Permutations), n(N), print_out(PrintOut), queens(Queens), early_exit(Early_Exit){
 }
 
 
@@ -12,13 +12,14 @@ Board::~Board(){
 
 int Board::validBoardCount(){
     int count = 0;
-    while (!(*early_exit) && permutations-- > 0){
+    uint64_t temp = 0;
+    while (!(*early_exit) && ++temp != permutations){
         if (validDiagonal()){
             ++count;
             if (print_out){
                 printOut();
             }
-        }        
+        }
         std::next_permutation(queens, queens + n);
     }
     return count;

@@ -8,21 +8,22 @@
 class Board
 {
 public:
-    Board(const uint32_t &Permutations, const uint8_t &N, const bool &PrintOut, uint8_t *Queens, bool *Early_Exit);
+    Board(const uint64_t &Permutations, const uint8_t &N, const bool &PrintOut, uint8_t *Queens, bool *Early_Exit);
     ~Board();
     
     int validBoardCount();
+    void printOut();
 
-    uint8_t *queens;
 
 private:
-    uint32_t permutations;
+    const uint64_t &permutations;
     const uint8_t &n;
     const bool print_out;
+    uint8_t *queens;
     bool *early_exit;
     
     bool validDiagonal();
-    void printOut();
+    uint32_t test_count = 0;
 };
 
 #endif
