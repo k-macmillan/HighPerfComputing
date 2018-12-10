@@ -1,4 +1,4 @@
-/* File:        Prog2.cu
+/* File:        final.cpp
  *
  * Author:      Kyle MacMillan
  *
@@ -22,40 +22,12 @@
 
 #include <iostream>     // cout
 #include <stdint.h>     // better integers
-#include <stdlib.h>     // srand, rand
 #include <mpi.h>        // mpi
 #include <string>       // Strings
-#include <queue>        // Queue
 
 #include "completion.h" // Completeness function/array
 #include "board.h"
 #include "nthpermutation.h"
-#include "nthpermutation.h"
-
-#ifdef DEBUG
-void singleTest(){
-    uint32_t n = 5;
-    uint32_t queens[6] = {0, 1, 2, 3, 4, 5};
-
-    Board test = Board(n, queens);
-    bool temp = test.validBoard();
-    if (temp){
-        // std::cout << "TRUE" << std::endl;
-        std::cout << "\n{";
-        for (uint32_t i = 0; i < n; ++i){
-            std::cout << queens[i] << ", ";
-        }
-        std::cout << queens[n] << "}\n" << std::endl;        
-    }
-    else{
-        std::cout << "\n{";
-        for (uint32_t i = 1; i < n; ++i){
-            std::cout << queens[i] << ", ";
-        }
-        std::cout << queens[n] << "} is NOT valid.\n" << std::endl; 
-    }
-}
-#endif
 
 
 int main (int argc, char** argv){
@@ -100,42 +72,40 @@ int main (int argc, char** argv){
 
 
 
-    if (user_defined){
-        // Run "n" queens on the N passed in
-        uint32_t local = 1;
-        if (id == 0){
-            std::cout << "Running " << int(n) << "-queens..." << std::endl;
-            while (!correctCount(n, global_count)){
-                MPI_Recv(&local, 1, MPI::UNSIGNED_LONG, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                global_count += local;
-            }
-            std::cout << "Found all valid queen positions: " << global_count << std::endl;
-            early_exit = true;
-            MPI_Bcast(&early_exit, 1, MPI::BOOL, 0, MPI_COMM_WORLD);
+    // Run "n" queens on the N passed in
+    uint32_t local = 1;
+    if (id == 0){
+        std::cout << "Running " << int(n) << "-queens..." << std::endl;
+        while (!correctCount(n, global_count)){
+            MPI_Recv(&local, 1, MPI::UNSIGNED_LONG, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            global_count += local;
+        }
+        std::cout << "Found all valid queen positions: " << global_count << std::endl;
+        early_exit = true;
+        MPI_Bcast(&early_exit, 1, MPI::BOOL, 0, MPI_COMM_WORLD);
+    }
+    else{
+        uint8_t *queens = (uint8_t*)malloc(n * sizeof(uint8_t));
+        for (uint8_t i = 0; i < n; ++i){
+            queens[i] = i;
+        }
+        uint64_t rank_perms = factorials[n] / p;
+        if (id != 1){
+            // Skip this for id == 1
+            uint64_t id_rank_perms = rank_perms * (id - 1) + factorials[n] % p;
+            nthPermutation(n, id_rank_perms, queens);
         }
         else{
-            uint8_t *queens = (uint8_t*)malloc(n * sizeof(uint8_t));
-            for (uint8_t i = 0; i < n; ++i){
-                queens[i] = i;
-            }
-            uint64_t rank_perms = factorials[n] / p;
-            if (id != 1){
-                // Skip this for id == 1
-                uint64_t id_rank_perms = rank_perms * (id - 1) + factorials[n] % p;
-                nthPermutation(n, id_rank_perms, queens);
-            }
-            else{
-                rank_perms = (factorials[n] / p) + (factorials[n] % p);
-            }
-            
-
-            Board b(rank_perms, n, print_out, queens, &early_exit, &local);
-            b.validBoardPermutations();
-            free(queens);
+            rank_perms = (factorials[n] / p) + (factorials[n] % p);
         }
+        
+
+        Board b(rank_perms, n, print_out, queens, &early_exit, &local);
+        b.validBoardPermutations();
+        free(queens);
     }
+
 
     MPI_Finalize();
     return 0;
 }
-
