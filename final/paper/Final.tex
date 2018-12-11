@@ -182,9 +182,32 @@ sequential time for $n=14$ at 135.1 minutes for sequential code.
 
 \section{Description of the algorithms and libraries used}
 The STL's \verb|next_permutation| was a keystone in the design and execution of 
-this program. Also used was \verb|MPI|, 
+this program. \verb|MPI| was used. The 
+\href{https://stackoverflow.com/a/7919887}{Stack Overflow post} for $n^{th}$ 
+permutation was incredibly useful.
 
 \section{Description of functions and program structure}
+\subsection{Program Structure}
+This program was setup with a Master/Slave (aka worker) configuration. The 
+Master in this case was \verb|linux102| or \verb|linux103| and the workers were 
+\verb|linux01-16|. I love classes so I wrote this in \verb|C++| and included a 
+\href{}{Board} class. Essentially when the program fires up it verifies user 
+input and then spins up the Master/Worker relations. Master eagerly awaits 
+\verb|MPI_Send| commands from the workers and then updates the ``found'' count. 
+Once the count reaches the threshold for this $n$-queens problem the Master uses 
+\verb|MPI_Bcast| to change a boolean flag which causes the workers to shutdown.
+
+There are two helper \verb|.h| files: \verb|completion.h| and 
+\verb|nthpermutation.h|. The helper files contain constants and functions 
+relevant to completion of tasks as well as the code to calculate the $n^{th}$ 
+permutation.
+
+\subsection{Description of Functions}
+Each function has a header if you wish to know details. Please see my repository 
+\href{https://github.com/macattackftw/HighPerfComputing/tree/master/final}{here} 
+and 
+\href{https://github.com/macattackftw/HighPerfComputing/tree/master/seqfinal}{here} 
+for \verb|MPI| and sequential solutions respectively.
 
 \newpage
 \section{How to compile and use the program}
