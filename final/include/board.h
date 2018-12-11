@@ -23,7 +23,6 @@ private:
     uint8_t *queens;
     bool *early_exit;
     uint32_t *increment;
-    uint32_t end = 0;
     
     bool validDiagonal();
 };
