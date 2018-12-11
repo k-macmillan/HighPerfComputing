@@ -32,6 +32,7 @@
 
 
 int main (int argc, char** argv){
+#ifndef SEQUENTIAL
     uint8_t n = 10;             // User defined n
     int id;                     // ID
     int p;                      // Processor count
@@ -126,4 +127,53 @@ int main (int argc, char** argv){
 
     MPI_Finalize();
     return 0;
+
+#else
+    uint8_t n = 10;             // User defined n
+    int p;                      // Processor count
+    bool print_out = false;
+
+        // Handle user input
+    try{
+        if (argc > 1){
+            n = stoi(std::string(argv[1]));
+            if (n > 19){
+                std::cout << "\nYour n: " << argv[1] << ", is too large. " 
+                          << "Please pick a number under 19. Aborting...\n" << std::endl;
+                return 0;
+            }
+            if (argc > 2){
+                if (std::string(argv[2]) == "printout"){
+                    print_out = true;
+                }
+            }
+        }
+        else{
+            std::cout << "Invalid command line arguments.\n" 
+                      << "mpirun -np ## ./final #" << std::endl;
+            return 0;
+        }
+    }catch(std::exception const & e){
+        std::string no_n = "basic_string::_M_construct null not valid";
+        if (std::string(e.what()) != no_n){
+            std::cout << "An error occurred: " << e.what() 
+                      << ", aborting..." << std::endl;
+            return 0;
+            }
+        }
+    }
+
+    uint8_t *queens = (uint8_t*)malloc(n * sizeof(uint8_t));
+    for (uint8_t i = 0; i < n; ++i){
+        queens[i] = i;
+    }
+    std::cout << "Running " << int(n) << "-queens..." << std::endl;
+    SBoard b(factorials[n], n, print_out, queens);
+    b.validBoardPermutations();
+    free(queens);
+   
+    return 0;
+
+
+#endif
 }
