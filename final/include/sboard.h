@@ -4,7 +4,6 @@
 #include <stdint.h>     // better integers
 #include <algorithm>    // next_permutation
 #include <iostream>     // cout
-#include <mpi.h>        // MPI_Send
 #include "completion.h" // correctCount
 
 class SBoard

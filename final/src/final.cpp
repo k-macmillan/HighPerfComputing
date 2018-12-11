@@ -22,8 +22,10 @@
 
 #include <iostream>     // cout
 #include <stdint.h>     // better integers
-#include <mpi.h>        // mpi
 #include <string>       // Strings
+#ifndef SEQUENTIAL
+#include <mpi.h>        // mpi
+#endif
 
 #include "completion.h" // Completeness function/array
 #include "board.h"
