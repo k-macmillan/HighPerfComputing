@@ -6,17 +6,20 @@
  *
  * Course:      CSC 792 - High Performance Computing
  *
- * Purpose:     
+ * Purpose:     Completion of final project. Please see github repository for a 
+ *              detailed writeup. 
+ *              https://github.com/macattackftw/HighPerfComputing
  *
  * Compile:     
  *              make (with provided Makefile)
  *
- * Run:         
+ * Run:         mpirun -np ## ./final #
+ *              mpirun -np ## ./final # printout
  *              
  *
- * Output:      
+ * Output:      None or valid queen layouts if printout
  *
- * Notes:       None, runs like a dream
+ * Notes:       Does not gracefully exit due to graduate requirement bug
  *
  */        
 
@@ -31,6 +34,14 @@
 #pragma GCC diagnostic ignored "-Wsign-compare"   // Ignore sign compares
 
 
+
+/*------------------------------------------------------------------------------
+ * Function:    main
+ * Purpose:     Checks user input and sets up MPI. Handles Master/Worker 
+ *              interactions.
+ *
+ * In arg:      argc, argv
+ */
 int main (int argc, char** argv){
     uint8_t n = 10;             // User defined n
     int id;                     // ID

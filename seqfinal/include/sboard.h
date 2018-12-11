@@ -9,20 +9,23 @@
 class SBoard
 {
 public:
-    SBoard(const uint64_t &Permutations, const uint8_t &N, const bool &PrintOut, uint8_t *Queens);
-    ~SBoard();
+    SBoard(const uint64_t &Permutations,
+           const uint8_t &N,
+           const bool &PrintOut,
+           uint8_t *Queens);            // Constructor
+    ~SBoard();                          // Destructor
     
-    void validSBoardPermutations();
-    void printOut();
+    void validSBoardPermutations();     // Runs permutations
+    void printOut();                    // Prints valid board layouts
 
 
 private:
-    const uint64_t &permutations;
-    const uint8_t &n;
-    const bool print_out;
-    uint8_t *queens;
+    const uint64_t &permutations;       // Number of permutations
+    const uint8_t &n;                   // "N" of n-queens
+    const bool print_out;               // Whether or not to print
+    uint8_t *queens;                    // Queen layout array
     
-    bool validDiagonal();
+    bool validDiagonal();               // Checks for valid diagonals
 };
 
 #endif
