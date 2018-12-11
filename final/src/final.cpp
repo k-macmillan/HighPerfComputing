@@ -80,7 +80,14 @@ int main (int argc, char** argv){
         }
     }
 
-    if 
+    if (p > factorials[n]){
+        if (id == 0){
+            std::cout << "Invalid command line arguments.\n" 
+                      << "mpirun -np ## ./final #" << std::endl;
+        }
+        MPI_Finalize();
+        return 0;
+    }
 
 
 
