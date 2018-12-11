@@ -47,8 +47,8 @@ int main (int argc, char** argv){
     int id;                     // ID
     int p;                      // Processor count
     bool early_exit = false;    // Early exit for grads
-    bool print_out = false;
-    uint32_t global_count = 0;
+    bool print_out = false;     // Print or not
+    uint32_t global_count = 0;  // How many boards found
 
     MPI_Init(&argc, &argv );
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
@@ -105,6 +105,7 @@ int main (int argc, char** argv){
     uint32_t local = 1;
     if (id == 0){
         std::cout << "Running " << int(n) << "-queens..." << std::endl;
+        // Enter receive loop for workers to transmit to
         while (!correctCount(n, global_count)){
             MPI_Recv(&local, 1, MPI::UNSIGNED_LONG, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             global_count += local;
@@ -114,10 +115,13 @@ int main (int argc, char** argv){
         MPI_Bcast(&early_exit, 1, MPI::BOOL, 0, MPI_COMM_WORLD);
     }
     else{
+        // Allocate array and initialize
         uint8_t *queens = (uint8_t*)malloc(n * sizeof(uint8_t));
         for (uint8_t i = 0; i < n; ++i){
             queens[i] = i;
         }
+
+        // Set up the rank permutations
         uint64_t rank_perms = factorials[n] / p;
         if (id != 1){
             // Skip this for id == 1
@@ -128,9 +132,11 @@ int main (int argc, char** argv){
             rank_perms = (factorials[n] / p) + (factorials[n] % p);
         }
         
-
+        // Instantiate and permute!
         Board b(rank_perms, n, print_out, queens, &early_exit, &local);
         b.validBoardPermutations();
+
+        // Free memory
         free(queens);
     }
 

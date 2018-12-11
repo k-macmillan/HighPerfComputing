@@ -41,9 +41,9 @@
  */
 int main (int argc, char** argv){
     uint8_t n = 10;             // User defined n
-    bool print_out = false;
+    bool print_out = false;     // Print or not
 
-        // Handle user input
+    // Handle user input
     try{
         if (argc > 1){
             n = stoi(std::string(argv[1]));
@@ -72,13 +72,18 @@ int main (int argc, char** argv){
         }
     }
 
+    // Allocate array and initialize
     uint8_t *queens = (uint8_t*)malloc(n * sizeof(uint8_t));
     for (uint8_t i = 0; i < n; ++i){
         queens[i] = i;
     }
     std::cout << "Running " << int(n) << "-queens..." << std::endl;
+
+    // Instantiate and permute!
     SBoard b(factorials[n], n, print_out, queens);
     b.validSBoardPermutations();
+
+    // Free memory
     free(queens);
    
     return 0;
