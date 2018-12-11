@@ -74,7 +74,7 @@ method (as described in Chapter 6) to complete the assignment. By having
 \verb|MPI_Send| and \verb|MPI_Recv| in the workers and master, respectively, I 
 was able to meet that program requirement. Essentially the master goes directly 
 into a receive loop, waiting for an \verb|MPI_Send| on the appropriate tag and 
-source. Once receiving the value a counter is incremented and it checks if we 
+source. After receiving the value a counter is incremented and it checks if we 
 have hit the expected number of solutions. If we have not finished it goes back 
 into the receive loop, otherwise it sends out an \verb|MPI_Bcast| to all workers 
 that changes a boolean flag from $false$ to $true$, which stops them from 
@@ -94,6 +94,7 @@ this program. Also used was \verb|MPI|,
 
 \section{Description of functions and program structure}
 
+
 \section{How to compile and use the program}
 This program can be compiled with the Makefile. Simply type: 
 $$\texttt{make}$$
@@ -104,7 +105,15 @@ $$\texttt{make final}$$
 $$\verb|mpirun -np 129 .\final 13|$$
 
 `129' represents the number of processors and `13' represents the $n$ part of 
-the n-queens problem. 
+the n-queens problem. This was coded to deny use of less than a $1:1$ 
+\textbf{ratio of processors to boards}. It was completely possible to code it up 
+to accept less but increased complexity unnecessarily. Essentially if the number 
+following np is greater than the number following \verb|.\final| taken to the 
+factorial \textbf{it will not run}.
+\\
+
+\noindent Example:
+\verb|mpirun -np 12 .\final 3!| fails because 12 is greater than $3!$.
 
 
 \newpage

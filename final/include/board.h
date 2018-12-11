@@ -2,9 +2,9 @@
 #define __BOARD_H__
 
 #include <stdint.h>     // better integers
-#include <algorithm>    // min, max, next_permutation
-#include <iostream>
-#include <mpi.h>        // mpi
+#include <algorithm>    // next_permutation
+#include <iostream>     // cout
+#include <mpi.h>        // MPI_Send
 
 class Board
 {

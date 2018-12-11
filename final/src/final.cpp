@@ -31,8 +31,7 @@
 
 
 int main (int argc, char** argv){
-    bool user_defined = false;  // Flag for user-defined n
-    uint8_t n;                  // User defined n
+    uint8_t n = 10;             // User defined n
     int id;                     // ID
     int p;                      // Processor count
     bool early_exit = false;    // Early exit for grads
@@ -46,29 +45,42 @@ int main (int argc, char** argv){
 
     // Handle user input
     try{
-        n = stoi(std::string(argv[1]));
-        if (n > 19){
-            if (id == 0)
-                std::cout << "\nYour n: " << argv[1] << ", is too large. " << 
-                "Please pick a number under 19. Aborting...\n" << std::endl;
+        if (argc > 1){
+            n = stoi(std::string(argv[1]));
+            if (n > 19){
+                if (id == 0)
+                    std::cout << "\nYour n: " << argv[1] << ", is too large. " << 
+                    "Please pick a number under 19. Aborting...\n" << std::endl;
+                MPI_Finalize();
+                return 0;
+            }
+            if (argc > 2){
+                if (std::string(argv[2]) == "printout"){
+                    print_out = true;
+                }
+            }
+        }
+        else{
+            if (id == 0){
+                std::cout << "Invalid command line arguments.\n" 
+                          << "mpirun -np ## ./final #" << std::endl;
+            }
             MPI_Finalize();
             return 0;
         }
-        else{
-            user_defined = true;
-        }
-
     }catch(std::exception const & e){
         if (id == 0){
             std::string no_n = "basic_string::_M_construct null not valid";
             if (std::string(e.what()) != no_n){
-                std::cout << "An error occured: " << e.what() 
+                std::cout << "An error occurred: " << e.what() 
                           << ", aborting..." << std::endl;
                 MPI_Finalize();
                 return 0;
             }
         }
     }
+
+    if 
 
 
 
