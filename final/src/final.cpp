@@ -44,6 +44,13 @@ int main (int argc, char** argv){
     MPI_Comm_size(MPI_COMM_WORLD, &p);
     p -= 1;
 
+    if (p == 0){
+        std::cout << "Invalid command line arguments.\n" 
+                  << "mpirun -np ## ./final #" << std::endl;
+        MPI_Finalize();
+        return 0;
+    }
+
     // Handle user input
     try{
         if (argc > 1){
@@ -81,14 +88,6 @@ int main (int argc, char** argv){
         }
     }
 
-    if (p > factorials[n]){
-        if (id == 0){
-            std::cout << "Invalid command line arguments.\n" 
-                      << "mpirun -np ## ./final #" << std::endl;
-        }
-        MPI_Finalize();
-        return 0;
-    }
 
 
 
