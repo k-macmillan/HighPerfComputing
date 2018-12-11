@@ -22,7 +22,7 @@ void Board::validBoardPermutations(){
         }
         std::next_permutation(queens, queens + n);
     }
-    if (temp == permutations){
+    if (temp == permutations || (*early_exit)){
         MPI_Send(&end, 1, MPI::UNSIGNED_LONG, 0, 0, MPI_COMM_WORLD);
     }
 }
