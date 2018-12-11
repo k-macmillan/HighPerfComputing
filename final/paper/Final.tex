@@ -197,8 +197,13 @@ input and then spins up the Master/Worker relations. Master eagerly awaits
 Once the count reaches the threshold for this $n$-queens problem the Master uses 
 \verb|MPI_Bcast| to change a boolean flag which causes the workers to shutdown. 
 
-There is a ``feature'' I left in the code that does not allow for $n$ to be less 
-than 6. It hangs because 
+There is a ``feature'' I left in the code that causes crashes. I tried 
+everything I could think of but due to the graduate requirement of early exit it 
+completely messes with the \verb|MPI_Send| and \verb|MPI_Recv|. I tried all 
+kinds of combinations to get it to exit cleanly but if you put too many 
+processors on a small problem it will hang for a minute then dump. My 
+\verb|MPI_Send| was only being called on success. That leaves the Master hanging 
+in a receive loop.
 
 Sequential works a little different in that instead of a Master/Worker 
 relationship it has these 8 lines of code:
