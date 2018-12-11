@@ -1,7 +1,7 @@
 INCL := -Iinclude
 SRC_FILES := $(wildcard src/*.cpp)
 CFLAGS := -std=c++11 -Wall
-DFLAG := -DDEBUG
+DFLAG := -DSEQUENTIAL
 EXECUTABLE = final
 EXEC := -o $(EXECUTABLE)
 PAPER := paper/
@@ -17,8 +17,8 @@ clean:
 final: $(SRC_FILES)
 	mpic++ $(EXEC) $(SRC_FILES) $(INCL) $(CFLAGS)
 
-dfinal: $(SRC_FILES)
-	mpic++ $(EXEC) $(SRC_FILES) $(INCL) $(CFLAGS) $(DFLAG)
+seqfinal: $(SRC_FILES)
+	g++ $(EXEC) $(SRC_FILES) $(INCL) $(CFLAGS) $(DFLAG)
 
 pdf: $(PAPER)$(TEX)
 	(cd paper && latexmk -pdf -pdflatex="pdflatex -interaction=nonstopmode" --shell-escape $(TEX) && latexmk -c)
