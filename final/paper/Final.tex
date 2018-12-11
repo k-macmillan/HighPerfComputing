@@ -197,6 +197,20 @@ input and then spins up the Master/Worker relations. Master eagerly awaits
 Once the count reaches the threshold for this $n$-queens problem the Master uses 
 \verb|MPI_Bcast| to change a boolean flag which causes the workers to shutdown.
 
+Sequential works a little different in that instead of a Master/Worker 
+relationship it has these 8 lines of code:
+
+\begin{minted}{c++}
+    uint8_t *queens = (uint8_t*)malloc(n * sizeof(uint8_t));
+    for (uint8_t i = 0; i < n; ++i){
+        queens[i] = i;
+    }
+    std::cout << "Running " << int(n) << "-queens..." << std::endl;
+    SBoard b(factorials[n], n, print_out, queens);
+    b.validSBoardPermutations();
+    free(queens);
+\end{minted}
+
 There are two helper \verb|.h| files: \verb|completion.h| and 
 \verb|nthpermutation.h|. The helper files contain constants and functions 
 relevant to completion of tasks as well as the code to calculate the $n^{th}$ 
