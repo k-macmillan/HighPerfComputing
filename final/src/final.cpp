@@ -45,8 +45,7 @@ int main (int argc, char** argv){
     p -= 1;
 
     if (p == 0){
-        std::cout << "Invalid command line arguments.\n" 
-                  << "mpirun -np ## ./final #" << std::endl;
+        std::cout << "Invalid usage:\nProcessors must be > 1" << std::endl;
         MPI_Finalize();
         return 0;
     }
