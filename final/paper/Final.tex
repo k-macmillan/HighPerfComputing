@@ -195,7 +195,10 @@ Master in this case was \verb|linux102| or \verb|linux103| and the workers were
 input and then spins up the Master/Worker relations. Master eagerly awaits 
 \verb|MPI_Send| commands from the workers and then updates the ``found'' count. 
 Once the count reaches the threshold for this $n$-queens problem the Master uses 
-\verb|MPI_Bcast| to change a boolean flag which causes the workers to shutdown.
+\verb|MPI_Bcast| to change a boolean flag which causes the workers to shutdown. 
+
+There is a ``feature'' I left in the code that does not allow for $n$ to be less 
+than 6. It hangs because 
 
 Sequential works a little different in that instead of a Master/Worker 
 relationship it has these 8 lines of code:
