@@ -95,7 +95,6 @@ int main (int argc, char** argv){
     if (id == 0){
         std::cout << "Running " << int(n) << "-queens..." << std::endl;
         while (!correctCount(n, global_count)){
-            local = 1;
             MPI_Recv(&local, 1, MPI::UNSIGNED_LONG, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             global_count += local;
         }
