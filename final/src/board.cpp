@@ -1,4 +1,3 @@
-#ifndef SEQUENTIAL
 #include "board.h"
 #pragma GCC diagnostic ignored "-Wsign-compare"   // Ignore sign compares
 
@@ -45,4 +44,3 @@ void Board::printOut(){
     }
     std::cout << int(queens[n-1]) << "} PASSED" << std::endl;
 }
-#endif
