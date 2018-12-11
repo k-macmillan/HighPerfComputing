@@ -182,6 +182,93 @@ sequential time for $n=14$ at 135.1 minutes for sequential code.
 
 
 %%%%%%%%%%%%% Metrics Section %%%%%%%%%%%%%
+Given all of this data I can run some performance metrics on it. Lets start with 
+an observation/estimation. As can be seen in Figure \ref{fig:mpi7} it takes 
+approximately 3 seconds to run a solution that takes 0.005 seconds when ran 
+sequentially. We can therefore assume a base overhead $\kappa = 3$ seconds. This 
+number likely increases as more \verb|MPI_Send| and \verb|MPI_Recv| calls are 
+made. $\Psi$ (speedup) is variable in this case because the amount of work being 
+done. 
+
+$$\Psi = \frac{\sigma(n)}{\varphi(n)}$$
+
+So in the case of $n=12$ we see a speedup of:
+
+$$\Psi = \frac{42.776}{4.956} = 8.631154157$$
+
+So in the case of $n=13$ we see a speedup of:
+
+$$\Psi = \frac{579.287}{31.994} = 18.106113646$$
+
+These are simple speedup values, but an 18 times increase is amazing. I did not 
+run sequential at $n=14$ because the math showed it would take around two hours 
+to run. If we assume 2 hours for that and the time shown in Figure 
+\ref{fig:mpi14} of 4 minutes and 28 seconds we get:
+
+$$\Psi = \frac{7200}{268.381} = 26.8275325$$
+
+and for $n=15$:
+
+$$\Psi = \frac{121650}{3497.897} = 34.778039491$$
+
+A 34 times speedup, and it will only increase from there. As we can see there is 
+a trend to this speedup but it is going to cap eventually. The reason for that 
+is because we are not increasing the number of processors as the amount of work 
+we have to do is increased.
+
+Next lets calculate efficiency which is:
+
+$$Efficiency = \frac{Sequential\ Execution\ Time}{Parallel\ Execution\ Time * Processors}$$
+
+$$\epsilon_{12} = \frac{42.776}{4.956 * 129} = 0.066908172$$
+$$\epsilon_{13} = \frac{579.287}{31.994 * 129} = 0.14035747$$
+$$\epsilon_{14} = \frac{7200}{268.381 * 129} = 0.207965368$$
+
+So we can see efficiency continue to increase as the problem size grows. I 
+expect it to take approximately 121,650 seconds (or 33 hours) to run sequential 
+$n=15$. Using the timing from Figure \ref{fig:mpi15} we can estimate efficiency:
+
+$$\epsilon_{15} = \frac{121650}{3497.897 * 129} = 0.269597205$$
+
+The efficiency increase is approximately linear, which is interesting.
+\\
+
+\noindent Moving on, the Karp-Flatt metric is defined as:
+
+$$f_e = \frac{\frac{1}{\Psi(n, p)} - \frac{1}{p}}{1 - \frac{1}{p}}$$
+
+We can take our experimentally gained speedups and apply them to this metric:
+
+$$f_{12} = \frac{\frac{1}{8.631154157} - \frac{1}{129}}{1 - \frac{1}{129}} = 0.108952012$$
+$$f_{13} = \frac{\frac{1}{18.106113646} - \frac{1}{129}}{1 - \frac{1}{129}} = 0.047848948$$
+$$f_{14} = \frac{\frac{1}{26.8275325} - \frac{1}{129}}{1 - \frac{1}{129}} = 0.029753851$$
+$$f_{15} = \frac{\frac{1}{34.778039491} - \frac{1}{129}}{1 - \frac{1}{129}} = 0.021165916$$
+
+So rather than calculate the efficiency of throwing additional processors at 
+this problem we calculated what kind of efficiencies we could expect as our 
+problem continued to grow exponentially. The linear-scaling efficiency paints a 
+picture that we will eventually reach maximum efficiency for this system, at 
+which point we would need to increase the processors to see any more gain. The 
+predicted maximum efficiency is around $n=26$, but that doesn't take into 
+account the fact that I used $uint32\_t$ instead of $uint64\_t$. 64 bit integers 
+tend to take longer to work with.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{images/MPI_7}
+        \caption{MPI 7-queens}
+        \label{fig:mpi7}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{images/MPI_2_7}
+        \caption{Sequential 7-queens}
+        \label{fig:seq7}
+    \end{minipage}
+\end{figure}
+
 
 \section{Description of the algorithms and libraries used}
 The STL's \verb|next_permutation| was a keystone in the design and execution of 
@@ -321,4 +408,69 @@ to with the time available. It'd be really neat to have a
 
 Overall fun course and I may be able to use \verb|MPI| for my thesis work.
 
+\section{Additional Timings}
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{images/MPI_8}
+        \caption{MPI 8-queens}
+        \label{fig:mpi8}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{images/MPI_2_8}
+        \caption{Sequential 8-queens}
+        \label{fig:seq8}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{images/MPI_8}
+        \caption{MPI 8-queens}
+        \label{fig:mpi8}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{images/MPI_2_8}
+        \caption{Sequential 8-queens}
+        \label{fig:seq8}
+    \end{minipage}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{images/MPI_9}
+        \caption{MPI 9-queens}
+        \label{fig:mpi9}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{images/MPI_2_9}
+        \caption{Sequential 9-queens}
+        \label{fig:seq9}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{images/MPI_10}
+        \caption{MPI 10-queens}
+        \label{fig:mpi10}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{images/MPI_2_10}
+        \caption{Sequential 10-queens}
+        \label{fig:seq10}
+    \end{minipage}
+\end{figure}
 \end{document}
