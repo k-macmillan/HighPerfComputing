@@ -28,6 +28,7 @@
 #include "completion.h" // Completeness function/array
 #include "board.h"
 #include "nthpermutation.h"
+#pragma GCC diagnostic ignored "-Wsign-compare"   // Ignore sign compares
 
 
 int main (int argc, char** argv){
