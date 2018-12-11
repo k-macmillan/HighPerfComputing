@@ -86,7 +86,95 @@ not like our previous assignments. We have an exponential growth in the problem
 size \textit{at each step}. That means we don't really need high-fidelity timing 
 to get a picture of what's going on. 
 
+Figure \ref{fig:seq11} shows that up to $n=11$ my sequential implementation is 
+faster than the MPI solution shown in Figure \ref{fig:mpi11}. I didn't give it 
+much thought at first and decided to try and run the problem on a ``single'' 
+processor but I had left the host file filled with computers so I am not sure 
+what the numbers in Figure \ref{fig:mpiseq11} represent. After that blooper I 
+created the sequential code which is a clone of the \verb|MPI| with all 
+\verb|MPI| aspects stripped out. 
 
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.75\textwidth]{MPI_2_11}
+        \caption{Sequential 11-queens}
+        \label{fig:seq11}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{MPI_11}
+        \caption{MPI 11-queens}
+        \label{fig:mpi11}
+    \end{minipage}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{MPI_1_11}
+    \caption{``Sequential'' MPI 11-queens}
+    \label{fig:mpiseq11}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.75\textwidth]{MPI_2_12}
+        \caption{Sequential 12-queens}
+        \label{fig:seq12}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{MPI_12}
+        \caption{MPI 12-queens}
+        \label{fig:mpi12}
+    \end{minipage}
+\end{figure}
+
+Figure \ref{fig:seq12} shows the sequential time for $n=12$ and Figure 
+\ref{fig:mpi12} shows the first time the MPI solution beat the sequential 
+solution, and it was by quite a margin.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.75\textwidth]{MPI_2_13}
+        \caption{Sequential 13-queens}
+        \label{fig:seq13}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{MPI_13}
+        \caption{MPI 13-queens}
+        \label{fig:mpi13}
+    \end{minipage}
+\end{figure}
+
+Wanting to gather as much data as possible I ran sequential up to $n=13$. Figure 
+\ref{fig:seq13} shows that it took 9 minutes and 39 seconds to quit early from a 
+sequential run of $n=13$. Figure \ref{fig:mpi13} shows it took 18 times longer 
+to run the sequential compared to \verb|MPI|. I calculated out the estimated 
+sequential time for $n=14$ at 135.1 minutes for sequential code.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{MPI_14}
+        \caption{MPI 14-queens}
+        \label{fig:mpi14}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{MPI_15}
+        \caption{MPI 15-queens}
+        \label{fig:mpi15}
+    \end{minipage}
+\end{figure}
 
 \section{Description of the algorithms and libraries used}
 The STL's \verb|next_permutation| was a keystone in the design and execution of 
@@ -94,40 +182,88 @@ this program. Also used was \verb|MPI|,
 
 \section{Description of functions and program structure}
 
-
+\newpage
 \section{How to compile and use the program}
-This program can be compiled with the Makefile. Simply type: 
+\subsection{MPI Run}
+This program can be compiled with the Makefile. From the `final' folder simply 
+type: 
 $$\texttt{make}$$
 $$or$$
 $$\texttt{make final}$$
 
 \noindent To use the program type:
 $$\verb|mpirun -np 129 .\final 13|$$
+$$or$$
+$$\verb|mpirun -np 129 .\final 13 printout|$$
 
 `129' represents the number of processors and `13' represents the $n$ part of 
-the n-queens problem. This was coded to deny use of less than a $1:1$ 
-\textbf{ratio of processors to boards}. It was completely possible to code it up 
-to accept less but increased complexity unnecessarily. Essentially if the number 
-following np is greater than the number following \verb|.\final| taken to the 
-factorial \textbf{it will not run}.
-\\
+the n-queens problem. Master node $id = 0$, therefore it is necessary to run 
+with \verb|-np 2| or more. It \textbf{will not run properly} if you specify 
+\verb|-np 1|. If you wish to run it sequentially see Section 
+\ref{sec:sequential}. The \verb|printout| must follow the integer and is used to 
+print valid queen positions to the console if you wish to have printouts.
 
-\noindent Example:
-\verb|mpirun -np 12 .\final 3!| fails because 12 is greater than $3!$.
 
+\subsection{Sequential}\label{sec:sequential}
+This program can be compiled with the Makefile. From the `seqfinal' folder 
+simply type: 
+$$\texttt{make}$$
+$$or$$
+$$\texttt{make final}$$
+
+\noindent To use the program type:
+$$\verb|.\final 10|$$
+$$or$$
+$$\verb|.\final 10 printout|$$
+
+\verb|10| can be any integer, though I do not recommend going above 12 because 
+run time is likely to exceed 9 minutes as shown in Figure \ref{fig:seq13}. The 
+\verb|printout| must follow the integer and is used to print valid queen 
+positions to the console if you wish to have printouts.
 
 \newpage
 \section{Description of the testing and verification process}{\label{sec:test}}
 Testing was done with printout verification and count verification. What that 
 means is I bounced the printout arrays of n-queen positions and verified them by 
-hand. This could obviously only be done on smaller $n$ values. For larger $n$ 
-values I assumed the diagonal check was correct (since it was verified good at 
-the lower level) and only verified with the count method. A function was made to 
-test the count against a const array of known solution for a given $n$. 
+hand. Figure \ref{fig:console} shows an example printout. This could obviously 
+only be done on smaller $n$ values. For larger $n$ values I assumed the diagonal 
+check was correct (since it was verified good at the lower level) and only 
+verified with the count method. A function was made to test the count against a 
+const array of known solution for a given $n$. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{console_output}
+    \caption{Testing n-queens output}
+    \label{fig:console}
+\end{figure}
 
 \section{Description of what you have submitted}
 Included in the submission is the code needed to compile the program, a Makefile 
 to compile said code, and a detailed write-up of the assignment in pdf form.
 
+\section{Additional Thoughts}
+I really wish we had more time for this project. I would have really liked to 
+dig into \verb|MPI| more; it's extremely powerful. I wanted to go about this 
+problem in a totally different route but I was time constrained (due to 
+coursework and personal reasons). 
+
+Ideally I believe this problem would be solved with an \verb|MPI_Send| and 
+\verb|MPI_Recv| in each worker. Instead of splitting the entire set of 
+permutations amongst $p$ processors I wanted to split \textit{half} of the 
+permutations amongst $p$ processors. Then when one finished early through 
+\textit{pruning} it could push an \verb|MPI_Send| call to the Master node, at 
+which point it would \verb|MPI_Recv| the request and \verb|MPI_Send| a new 
+permutation along with $k$ permutations to run through. What this would have 
+accomplished was essentially a worker queue so as workers finished they would 
+request more work. Given that this problem has very dynamic work loads this 
+would be a ``near-ideal'' plan.
+
+I wanted to do pruning but it added more complexity than I was willing to commit 
+to with the time available. It'd be really neat to have a 
+``Distributed Computing'' or ``Parallel 2'' course that built on \verb|CUDA| and 
+\verb|MPI|.
+
+Overall fun course and I may be able to use \verb|MPI| for my thesis work.
 
 \end{document}

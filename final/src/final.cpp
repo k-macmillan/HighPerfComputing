@@ -20,15 +20,14 @@
  *
  */        
 
-#include <iostream>     // cout
-#include <stdint.h>     // better integers
-#include <string>       // Strings
-#include <mpi.h>        // mpi
-#include "board.h"
-#include "sboard.h"
+#include <iostream>         // cout
+#include <stdint.h>         // better integers
+#include <string>           // Strings
+#include <mpi.h>            // mpi
 
-#include "completion.h" // Completeness function/array
-#include "nthpermutation.h"
+#include "board.h"          // Handles k permutations
+#include "completion.h"     // Completeness function/array
+#include "nthpermutation.h" // Calculates the nth permutation
 #pragma GCC diagnostic ignored "-Wsign-compare"   // Ignore sign compares
 
 
