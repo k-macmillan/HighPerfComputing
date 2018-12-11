@@ -25,10 +25,12 @@
 #include <string>       // Strings
 #ifndef SEQUENTIAL
 #include <mpi.h>        // mpi
+#include "board.h"
+#else
+#include "sboard.h"
 #endif
 
 #include "completion.h" // Completeness function/array
-#include "board.h"
 #include "nthpermutation.h"
 #pragma GCC diagnostic ignored "-Wsign-compare"   // Ignore sign compares
 
