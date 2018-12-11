@@ -22,8 +22,9 @@ void Board::validBoardPermutations(){
         }
         std::next_permutation(queens, queens + n);
     }
-    if (temp == permutations){
+    if (temp == permutations && !(early_exit)){
         *early_exit = true;
+        MPI_Send(&end, 1, MPI::UNSIGNED_LONG, 0, 0, MPI_COMM_WORLD);
         MPI_Bcast(&early_exit, 1, MPI::BOOL, 0, MPI_COMM_WORLD);
     }
 }
